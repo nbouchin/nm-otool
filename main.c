@@ -44,7 +44,7 @@ int		main(int argc, char **argv)
 			string_table = (char *)((char *)mach_header + symtab_command->stroff);// Access to the string table using stroff.
 			while (nsyms)// Run while there is a symbol.
 			{
-				dprintf(2, "%s\n", (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				dprintf(2, "%-17llx %hhu %s\n", nlist->n_value, nlist->n_type, (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
 				nlist += 1;// Inc. symbol.
 				nsyms--;
 			}
