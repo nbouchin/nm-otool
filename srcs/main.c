@@ -44,7 +44,16 @@ int		main(int argc, char **argv)
 			string_table = (char *)((char *)mach_header + symtab_command->stroff);// Access to the string table using stroff.
 			while (nsyms)// Run while there is a symbol.
 			{
-				dprintf(2, "%-17llx %hhu %s\n", nlist->n_value, nlist->n_type, (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				if ((nlist->n_value & N_UNDF) == N_UNDF)
+					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'U', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				else if ((nlist->n_value & N_ABS) == N_ABS)
+					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'A', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				else if ((nlist->n_value & N_SECT) == N_SECT)
+					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'T', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				else if ((nlist->n_value & N_PBUD) == N_PBUD)
+					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'P', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				else if ((nlist->n_value & N_INDR) == N_INDR)
+					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'I', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
 				nlist += 1;// Inc. symbol.
 				nsyms--;
 			}
