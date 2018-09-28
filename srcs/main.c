@@ -1,18 +1,4 @@
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <mach-o/loader.h>
-#include <mach-o/nlist.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
-
-typedef struct mach_header_64		t_mach_header;
-typedef struct load_command 		t_load_command;
-typedef struct segment_command_64	t_segment_command;
-typedef struct stat					t_stat;
-typedef struct section_64			t_section;
-typedef struct symtab_command		t_symtab_command;
-typedef struct nlist_64				t_nlist;
+#include "../includes/libft_nm.h"
 
 int		main(int argc, char **argv)
 {
@@ -45,16 +31,20 @@ int		main(int argc, char **argv)
 			string_table = (char *)((char *)mach_header + symtab_command->stroff);// Access to the string table using stroff.
 			while (nsyms)// Run while there is a symbol.
 			{
-				if ((nlist->n_value & N_UNDF) == N_UNDF)
+				if ((nlist->n_type & N_STAB))
+					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'S', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				else if ((nlist->n_type & N_TYPE) == N_UNDF)
 					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'U', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
-				else if ((nlist->n_value & N_ABS) == N_ABS)
+				else if ((nlist->n_type & N_TYPE) == N_ABS)
 					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'A', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
-				else if ((nlist->n_value & N_SECT) == N_SECT)
+				else if ((nlist->n_type & N_TYPE) == N_SECT)
 					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'T', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
-				else if ((nlist->n_value & N_PBUD) == N_PBUD)
+				else if ((nlist->n_type & N_TYPE) == N_PBUD)
 					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'P', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
-				else if ((nlist->n_value & N_INDR) == N_INDR)
+				else if ((nlist->n_type & N_TYPE) == N_INDR)
 					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'I', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
+				else if ((nlist->n_type & N_EXT))
+					dprintf(2, "%-17llx %c %s\n", nlist->n_value, 'E', (char *)string_table + nlist->n_un.n_strx);// Print string from string table (which is currently just a string).
 				nlist += 1;// Inc. symbol.
 				nsyms--;
 			}
