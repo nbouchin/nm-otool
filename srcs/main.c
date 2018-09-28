@@ -6,10 +6,13 @@ int		main(int argc, char **argv)
 	int						fd;
 	uint32_t				ncmds;
 	uint32_t				nsyms;
+	unsigned long 			nsects;
 	t_mach_header			*mach_header;
 	t_load_command			*load_command;
 	t_stat					buf;
 	t_symtab_command		*symtab_command;
+	t_segment_command		*segment_command;
+	t_section				*section;
 	t_nlist					*nlist;
 	char					*string_table;
 
@@ -23,7 +26,19 @@ int		main(int argc, char **argv)
 	load_command = (t_load_command*)(mach_header + 1);// Get load_command.
 	while (ncmds)// Run while there is a command.
 	{
-		if (load_command->cmd == LC_SYMTAB)// Enter if command is a symtab.
+		if (load_command->cmd == LC_SEGMENT_64)// Enter if command is a symtab.
+		{
+			segment_command = (t_segment_command*)(load_command);// Casting command into segment_command.
+			nsects = segment_command->nsects;	
+			section = (t_section*)(segment_command + 1);
+			while (nsects)
+			{
+				dprintf(2, "%s\n", section->sectname);
+				section++;
+				nsects--;
+			}
+		}
+		else if (load_command->cmd == LC_SYMTAB)// Enter if command is a symtab.
 		{
 			symtab_command = (t_symtab_command*)(load_command);// Casting command into symtab_command.
 			nsyms = symtab_command->nsyms;// Get symbol number.

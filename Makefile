@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/09/28 13:42:08 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/09/28 15:54:56 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ INDEX = 0
 
 $(NAME): $(OBJS)
 	make -C srcs/libft
-	@$(CC) $(FLAGS) -L./$(LFTDIR) -lft -I $(HEADER) -o $(NAME) $(OBJS)
+	$(CC) $(FLAGS) -L./$(LFTDIR) -lft -I $(HEADER) -o $(NAME) $(OBJS)
 
 $(OBJDIR):
 	mkdir -p objs
@@ -45,5 +45,6 @@ fclean: clean
 	make -C srcs/libft fclean
 
 re: fclean all
+	make -C srcs/libft re
 
 .PHONY: all clean fclean re

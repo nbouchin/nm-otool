@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2017/11/08 21:42:56 by leukondor        ###   ########.fr        #
+#    Updated: 2018/09/28 15:58:04 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,23 +49,20 @@ all: $(OBJDIR) $(NAME)
 INDEX = 0
 
 $(NAME): $(OBJS)
-	@ar rc $(NAME) $(OBJS)
-	@ranlib $(NAME)
-	@echo "\nCompilation done for libftprintf.a"
+	ar rc $(NAME) $(OBJS)
+	ranlib $(NAME)
 
 $(OBJDIR):
-	@mkdir -p objs
+	mkdir -p objs
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(HEADER)libftprintf.h
-	@$(CC) -o $@ -c $< $(FLAGS) -I $(HEADER)
-	$(eval INDEX=$(shell echo $$(($(INDEX)+1))))
-	@printf "[%02d/24] Compiling (C) %s...\n" $(INDEX) $@
+	$(CC) -o $@ -c $< $(FLAGS) -I $(HEADER)
 
 clean:
-	@rm -rf objs
+	rm -rf objs
 
 fclean: clean
-	@rm -rf $(NAME)
+	rm -rf $(NAME)
 
 re: fclean all
 
