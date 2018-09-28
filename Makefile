@@ -6,13 +6,14 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/09/27 17:15:31 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/09/28 13:42:08 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME    = 	libft.a
+NAME    = 	ft_nm
 CC      = 	clang
 HEADER  = 	includes/
+LFTDIR	=	srcs/libft/
 FLAGS   = 	-Wall -Wextra -Werror
 SRCDIR  = 	srcs/
 OBJDIR  = 	objs/
@@ -26,28 +27,22 @@ all: $(OBJDIR) $(NAME)
 INDEX = 0
 
 $(NAME): $(OBJS)
-	@ar rc $(NAME) $(OBJS)
-	@ranlib $(NAME)
-	@echo "\nCompilation done for libft.a\n"
-	@make -C srcs/ft_printf
+	make -C srcs/libft
+	@$(CC) $(FLAGS) -L./$(LFTDIR) -lft -I $(HEADER) -o $(NAME) $(OBJS)
 
 $(OBJDIR):
-	@mkdir -p objs objs/get_next_line objs/str objs/put objs/num objs/mem objs/lst objs/conv objs/check objs/tab
+	mkdir -p objs
 
-$(OBJDIR)%.o: $(SRCDIR)%.c $(HEADER)libft.h
-	@$(CC) -o $@ -c $< $(FLAGS) -I $(HEADER)
-	$(eval INDEX=$(shell printf "%d" $$(($(INDEX)+1))))
-	@printf "[%02d/71] Compiling (C) %s...\n" $(INDEX) $@
+$(OBJDIR)%.o: $(SRCDIR)%.c $(HEADER)libft_nm.h
+	$(CC) -o $@ -c $< $(FLAGS) -I $(HEADER)
 
 clean:
-	@rm -rf objs
-	@echo "Cleaning objects..."
-	@make -C srcs/ft_printf clean
+	rm -rf objs
+	make -C srcs/libft clean
 
 fclean: clean
-	@rm -rf $(NAME)
-	@echo "Cleaning binaries..."
-	@make -C srcs/ft_printf fclean
+	rm -rf $(NAME)
+	make -C srcs/libft fclean
 
 re: fclean all
 

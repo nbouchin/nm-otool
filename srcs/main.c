@@ -16,6 +16,7 @@ typedef struct nlist_64				t_nlist;
 
 int		main(int argc, char **argv)
 {
+	(void)argc;
 	int						fd;
 	uint32_t				ncmds;
 	uint32_t				nsyms;
