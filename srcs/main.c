@@ -29,6 +29,7 @@ int		main(int argc, char **argv)
 		if (load_command->cmd == LC_SEGMENT_64)// Enter if command is a symtab.
 		{
 			segment_command = (t_segment_command*)(load_command);// Casting command into segment_command.
+			dprintf(2, "%s\n", segment_command->segname);
 			nsects = segment_command->nsects;	
 			section = (t_section*)(segment_command + 1);
 			while (nsects)
