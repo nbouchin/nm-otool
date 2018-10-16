@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/10/16 12:53:23 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/16 16:37:03 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ CC      = 	clang
 HEADER  = 	includes/
 LFTDIR	=	srcs/libft/
 LFTPDIR =	srcs/libft/srcs/ft_printf/
-FLAGS   = 	-Wall -Wextra -Werror
+FLAGS   = 	-Wall -Wextra -Werror -g
 SRCDIR  = 	srcs/
 OBJDIR  = 	objs/
 SRC		= nm.c
@@ -29,7 +29,7 @@ INDEX = 0
 
 $(NAME): $(OBJS)
 	make -C srcs/libft
-	$(CC) $(FLAGS) -L./$(LFTDIR) -lft -I $(HEADER) -o $(NAME) $(OBJS)
+	$(CC) $(FLAGS) -L./$(LFTDIR) -lft -L./$(LFTPDIR) -lftprintf -I $(HEADER) -o $(NAME) $(OBJS)
 
 $(OBJDIR):
 	mkdir -p objs
@@ -46,6 +46,5 @@ fclean: clean
 	make -C srcs/libft fclean
 
 re: fclean all
-	make -C srcs/libft re
 
 .PHONY: all clean fclean re

@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/16 15:48:07 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/16 16:28:22 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void		print_symtab(t_load_command *load_command, t_mach_header *mach_header, t_n
 	while (++i < ((t_symtab_command*)load_command)->nsyms)
 	{
 		if ((symtab[i].n_type & N_STAB))
-			printf("%-17llx %c %s\n", symtab[i].n_value, 'S', (char *)string_table + symtab[i].n_un.n_strx);
+			;//		printf("%-17llx %c %s\n", symtab[i].n_value, 'S', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_TYPE) == N_UNDF)
 			printf("%-17llx %c %s\n", symtab[i].n_value, 'U', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_TYPE) == N_ABS)
@@ -49,8 +49,8 @@ t_nlist		*get_symtab(t_load_command *load_command, t_mach_header *mach_header)
 
 	i = -1;
 	nlist = (t_nlist *)((char *)mach_header + ((t_symtab_command*)load_command)->symoff);
-	symtab = malloc(((t_symtab_command*)load_command)->nsyms);
-	while (++i < ((t_symtab_command*)load_command)->nsyms + 1)
+	symtab = malloc(((t_symtab_command*)load_command)->nsyms * sizeof(t_nlist));
+	while (++i < ((t_symtab_command*)load_command)->nsyms)
 	{
 		symtab[i] = *nlist;
 		nlist += 1;

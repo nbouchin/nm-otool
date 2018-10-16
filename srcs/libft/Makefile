@@ -6,14 +6,14 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/09/28 15:58:43 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/16 16:35:26 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME    = 	libft.a
 CC      = 	clang
 HEADER  = 	includes/
-FLAGS   = 	-Wall -Wextra -Werror
+FLAGS   = 	-Wall -Wextra -Werror -g
 SRCDIR  = 	srcs/
 OBJDIR  = 	objs/
 SRC		=	check/ft_isalnum.c				\
