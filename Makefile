@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/09/28 15:54:56 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/16 12:53:23 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,11 @@ NAME    = 	ft_nm
 CC      = 	clang
 HEADER  = 	includes/
 LFTDIR	=	srcs/libft/
+LFTPDIR =	srcs/libft/srcs/ft_printf/
 FLAGS   = 	-Wall -Wextra -Werror
 SRCDIR  = 	srcs/
 OBJDIR  = 	objs/
-SRC		=	main.c	
+SRC		= nm.c
 
 SRCS	= $(addprefix $(SRCDIR), $(SRC))
 OBJS	= $(addprefix $(OBJDIR), $(SRC:.c=.o))
