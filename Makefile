@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/10/17 17:12:16 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/17 17:18:42 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ FLAGS   = 	-Wall -Wextra -Werror -g
 SRCDIR  = 	srcs/
 OBJDIR  = 	objs/
 SRC		= nm.c \
-		  genereal_utils.c \
+		  symtab_utils.c \
 		  regular_header.c \
 
 SRCS	= $(addprefix $(SRCDIR), $(SRC))
