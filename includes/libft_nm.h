@@ -20,4 +20,4 @@ typedef struct nlist_64				t_nlist;
 
 
 int									regular_header(t_mach_header *mach_header);
-t_nlist								*get_symtab(t_load *load_command, t_mach_header *mach_header);
+t_nlist								*get_symtab(t_load_command *load_command, t_mach_header *mach_header);
