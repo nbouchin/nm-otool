@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/16 16:28:22 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/17 16:49:16 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,19 @@ void		print_symtab(t_load_command *load_command, t_mach_header *mach_header, t_n
 	while (++i < ((t_symtab_command*)load_command)->nsyms)
 	{
 		if ((symtab[i].n_type & N_STAB))
-			;//		printf("%-17llx %c %s\n", symtab[i].n_value, 'S', (char *)string_table + symtab[i].n_un.n_strx);
+			;//		printf("%017llx %c %s\n", symtab[i].n_value, 'S', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_TYPE) == N_UNDF)
-			printf("%-17llx %c %s\n", symtab[i].n_value, 'U', (char *)string_table + symtab[i].n_un.n_strx);
+			printf("%-17c %c %s\n", ' ', 'U', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_TYPE) == N_ABS)
-			printf("%-17llx %c %s\n", symtab[i].n_value, 'A', (char *)string_table + symtab[i].n_un.n_strx);
+			printf("%017llx %c %s\n", symtab[i].n_value, 'A', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_TYPE) == N_SECT)
-			printf("%-17llx %c %s\n", symtab[i].n_value, 'T', (char *)string_table + symtab[i].n_un.n_strx);
+			printf("%017llx %c %s\n", symtab[i].n_value, 'T', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_TYPE) == N_PBUD)
-			printf("%-17llx %c %s\n", symtab[i].n_value, 'P', (char *)string_table + symtab[i].n_un.n_strx);
+			printf("%017llx %c %s\n", symtab[i].n_value, 'P', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_TYPE) == N_INDR)
-			printf("%-17llx %c %s\n", symtab[i].n_value, 'I', (char *)string_table + symtab[i].n_un.n_strx);
+			printf("%017llx %c %s\n", symtab[i].n_value, 'I', (char *)string_table + symtab[i].n_un.n_strx);
 		else if ((symtab[i].n_type & N_EXT))
-			printf("%-17llx %c %s\n", symtab[i].n_value, 'E', (char *)string_table + symtab[i].n_un.n_strx);
+			printf("%017llx %c %s\n", symtab[i].n_value, 'E', (char *)string_table + symtab[i].n_un.n_strx);
 		nlist += 1;
 	}
 }
@@ -60,22 +60,12 @@ t_nlist		*get_symtab(t_load_command *load_command, t_mach_header *mach_header)
 
 int		ft_nm(t_mach_header *mach_header)
 {
-	uint32_t		ncmds;
-	t_nlist			*symtab;
-	t_load_command	*load_command;
-
-	ncmds = mach_header->ncmds + 1;
-	load_command = (t_load_command*)(mach_header + 1);
-	while (--ncmds)
+	if (mach_header->magic == FAT_CIGAM)
 	{
-		if (load_command->cmd == LC_SYMTAB)
-		{
-			symtab = get_symtab(load_command, mach_header);
-			print_symtab(load_command, mach_header, symtab);
-			free (symtab);
-		}
-		load_command = (t_load_command*)((char*)load_command + load_command->cmdsize);
+
 	}
+	else
+		regular_header(mach_header);
 	return (1);
 }
 
@@ -106,4 +96,3 @@ int		main(int argc, char **argv)
 		(nb_file + 1 < argc) ? ft_putendl("") : 0;
 	}
 }
-
