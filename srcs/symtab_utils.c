@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/18 16:40:22 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/18 17:14:53 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,21 @@ void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_6
 		while (++i < ((t_symtab_command*)load_command)->nsyms)
 		{
 			if ((symtab[i].n_type & N_STAB))
-				;//		ft_printf("%017llx %c %s\n", symtab[i].n_value, 'S', (char *)string_table + symtab[i].n_un.n_strx);
+			;//		ft_printf("%017llx %c %s\n", symtab[i].n_value, 'S', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
 			else if ((symtab[i].n_type & N_TYPE) == N_UNDF)
-				ft_printf("%-17c %c %s\n", ' ', 'U', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
+				ft_printf("%-7c %c %s\n", ' ', 'U', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
 			else if ((symtab[i].n_type & N_TYPE) == N_ABS)
-				ft_printf("%017llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'A', (char *)string_table + symtab[i].n_un.n_strx);
+				ft_printf("%07llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'A', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
 			else if ((symtab[i].n_type & N_TYPE) == N_SECT)
-				ft_printf("%017llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'T', (char *)string_table + symtab[i].n_un.n_strx);
+				ft_printf("%07llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'T', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
 			else if ((symtab[i].n_type & N_TYPE) == N_PBUD)
-				ft_printf("%017llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'P', (char *)string_table + symtab[i].n_un.n_strx);
+				ft_printf("%07llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'P', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
 			else if ((symtab[i].n_type & N_TYPE) == N_INDR)
-				ft_printf("%017llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'I', (char *)string_table + symtab[i].n_un.n_strx);
+				ft_printf("%07llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'I', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
 			else if ((symtab[i].n_type & N_EXT))
-				ft_printf("%017llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'E', (char *)string_table + symtab[i].n_un.n_strx);
+				ft_printf("%07llx %c %s\n", ((t_nlist*)symtab)[i].n_value, 'E', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
+			else
+				ft_printf("%-7c %c %s\n", ' ', 'U', (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx);
 			nlist_64 = (t_nlist_64*)((t_nlist*)nlist_64 + 1);
 		}
 	}
