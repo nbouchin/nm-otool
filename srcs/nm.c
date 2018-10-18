@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/18 09:31:39 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/18 09:53:11 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int		ft_nm(t_mach_header *mach_header)
 {
 	if (mach_header->magic == FAT_CIGAM)
-		fat_header(mach_header);
+		fat_header((t_fat_header*)mach_header);
 	else
 		regular_header(mach_header);
 	return (1);

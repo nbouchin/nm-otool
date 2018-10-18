@@ -19,7 +19,7 @@ typedef struct symtab_command		t_symtab_command;
 typedef struct nlist_64				t_nlist;
 
 
-int									fat_header(t_mach_header *mach_header);
+int									fat_header(t_fat_header *fat_header);
 int									regular_header(t_mach_header *mach_header);
 int									fat_header(t_mach_header *mach_header);
 void								print_symtab(t_load_command *load_command, t_mach_header *mach_header, t_nlist *symtab);
