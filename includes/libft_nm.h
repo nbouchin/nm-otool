@@ -22,6 +22,7 @@ typedef struct symtab_command		t_symtab_command;
 typedef struct nlist_64				t_nlist_64;
 typedef struct nlist				t_nlist;
 
+t_section_64						*get_command(t_load_command *load_command, t_mach_header_64 *mach_header_64);
 int									is_magic(uint32_t magic);
 int									is_fat(uint32_t magic);
 int									is_mach(uint32_t magic);

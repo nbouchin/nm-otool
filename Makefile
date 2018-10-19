@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/10/19 13:43:37 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/19 17:20:40 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,8 @@ SRC		= nm.c \
 		  symtab_utils.c \
 		  process_header.c \
 		  process_fat_header.c \
-		  general_utils.c
+		  general_utils.c \
+		  segment_utils.c
 
 SRCS	= $(addprefix $(SRCDIR), $(SRC))
 OBJS	= $(addprefix $(OBJDIR), $(SRC:.c=.o))

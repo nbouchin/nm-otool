@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 16:27:20 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 17:08:50 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ void		get_symbol(uint64_t n_value, char *symbol_name, t_nlist_64 *symtab, int i)
 		print_symbol(n_value, 'I', symbol_name, 64);
 	else if ((symtab[i].n_type & N_EXT))
 		print_symbol(n_value, 'E', symbol_name, 64);
-	else
-		print_symbol(n_value, 'U', symbol_name, 64);
 }
 
 void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_nlist_64 *symtab)
