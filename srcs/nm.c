@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/18 17:01:36 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 10:43:54 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		ft_nm(t_mach_header_64 *mach_header_64)
 	if (mach_header_64->magic == FAT_CIGAM)
 		fat_header((t_fat_header*)mach_header_64);
 	else
-		regular_header(mach_header_64);
+		regular_header(mach_header_64, mach_header_64->magic);
 	return (1);
 }
 
@@ -40,16 +40,15 @@ int		main(int argc, char **argv)
 		}
 		mach_header_64 = mmap(NULL, buf.st_size, PROT_WRITE | PROT_READ, MAP_PRIVATE, fd, 0);
 		if (mach_header_64 == MAP_FAILED)
-			return (0);
-		if (mach_header_64->magic != MH_MAGIC
-				&& mach_header_64->magic != MH_CIGAM
-				&& mach_header_64->magic != MH_MAGIC_64
-				&& mach_header_64->magic != MH_CIGAM_64
-				&& mach_header_64->magic != FAT_MAGIC
-				&& mach_header_64->magic != FAT_CIGAM
-				&& mach_header_64->magic != FAT_MAGIC_64
-				&& mach_header_64->magic != FAT_CIGAM_64)
+		{
+			munmap(mach_header_64, buf.st_size);
+			continue ;
+		}
+		if (!is_magic(mach_header_64->magic))
+		{
+			munmap(mach_header_64, buf.st_size);
 			ft_printf("nm: %s The file was not recognized as a valid object file\n", argv[nb_file]);
+		}
 		else
 		{
 			(argc > 2) ? ft_printf("%s:\n", argv[nb_file]) : 0;

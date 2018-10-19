@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/18 12:31:26 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 10:44:17 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ int		fat_header(t_fat_header *fat_header)
 	{
 //		ft_printf("Offset : %lu\n", OSSwapInt32(fat_arch->offset));
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header + OSSwapInt32(fat_arch->offset));
-//		ft_printf("mach_header_64->magic : %x\n", mach_header_64->magic);
-		regular_header(mach_header_64);
+		regular_header(mach_header_64, OSSwapInt32(fat_header->magic));
 		fat_arch++;
 	}
 	return (1);

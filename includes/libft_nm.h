@@ -22,8 +22,13 @@ typedef struct symtab_command		t_symtab_command;
 typedef struct nlist_64				t_nlist_64;
 typedef struct nlist				t_nlist;
 
+int									is_magic(uint32_t magic);
+int									is_fat(uint32_t magic);
+int									is_mach(uint32_t magic);
+int									is_64bits(uint32_t magic);
+int									is_32bits(uint32_t magic);
 int									ft_nm(t_mach_header_64 *mach_header_64);
 int									fat_header(t_fat_header *fat_header);
-int									regular_header(t_mach_header_64 *mach_header_64);
+int									regular_header(t_mach_header_64 *mach_header_64, uint32_t magic);
 void								print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_nlist_64 *symtab);
 t_nlist_64							*get_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64);

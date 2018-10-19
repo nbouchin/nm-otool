@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/18 16:57:19 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 11:08:59 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		regular_header(t_mach_header_64 *mach_header_64)
+int		regular_header(t_mach_header_64 *mach_header_64, uint32_t magic)
 {
 	static int			pass = 0;
 	uint32_t			ncmds;
@@ -23,7 +23,7 @@ int		regular_header(t_mach_header_64 *mach_header_64)
 	symtab = NULL;
 	load_command = NULL;
 	ncmds = mach_header_64->ncmds;
-	if (mach_header_64->magic != MH_MAGIC)
+	if (is_64bits(magic))
 	{
 		pass = 1;
 		load_command = (t_load_command*)(mach_header_64 + 1);
@@ -38,7 +38,7 @@ int		regular_header(t_mach_header_64 *mach_header_64)
 			load_command = (t_load_command*)((char*)load_command + load_command->cmdsize);
 		}
 	}
-	else if (mach_header_64->magic == MH_MAGIC && pass == 0)
+	else if (is_32bits(magic) && pass == 0)
 	{
 		load_command = (t_load_command*)((t_mach_header*)mach_header_64 + 1);
 		while (--ncmds)
