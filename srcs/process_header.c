@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 17:39:42 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 17:54:44 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		process_header(t_mach_header_64 *mach_header_64, uint32_t magic)
 		{
 			if (load_command->cmd == LC_SEGMENT_64)
 			{
-				sectab = get_command(load_command, mach_header_64);
+				sectab = get_section(load_command, mach_header_64);
 			}
 			else if (load_command->cmd == LC_SYMTAB)
 			{

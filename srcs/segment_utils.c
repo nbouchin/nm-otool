@@ -6,14 +6,14 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 17:47:51 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 17:52:50 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
 
-t_section_64	*get_command(t_load_command *load_command, t_mach_header_64 *mach_header_64)
+t_section_64	*get_section(t_load_command *load_command, t_mach_header_64 *mach_header_64)
 {
 	unsigned long			i;
 	unsigned long	 		nsects;
