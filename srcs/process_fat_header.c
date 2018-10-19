@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fat_header.c                                       :+:      :+:    :+:   */
+/*   process_fat_header.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 10:44:17 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 13:47:47 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		fat_header(t_fat_header *fat_header)
+int		process_fat_header(t_fat_header *fat_header)
 {
 	uint32_t			i;
 	t_fat_arch			*fat_arch;
@@ -20,12 +20,10 @@ int		fat_header(t_fat_header *fat_header)
 
 	i = -1;
 	fat_arch = (t_fat_arch*)(fat_header + 1);
-//	ft_printf("fat_header->magic : %x\nfat_header->nfat_arch : %u\n", OSSwapInt32(fat_header->magic), OSSwapInt32(fat_header->nfat_arch));
 	while (++i < OSSwapInt32(fat_header->nfat_arch))
 	{
-//		ft_printf("Offset : %lu\n", OSSwapInt32(fat_arch->offset));
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header + OSSwapInt32(fat_arch->offset));
-		regular_header(mach_header_64, OSSwapInt32(fat_header->magic));
+		process_header(mach_header_64, OSSwapInt32(fat_header->magic));
 		fat_arch++;
 	}
 	return (1);
