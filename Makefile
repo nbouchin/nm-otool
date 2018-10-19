@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/10/19 09:48:37 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/19 13:43:37 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,8 @@ SRCDIR  = 	srcs/
 OBJDIR  = 	objs/
 SRC		= nm.c \
 		  symtab_utils.c \
-		  regular_header.c \
-		  fat_header.c \
+		  process_header.c \
+		  process_fat_header.c \
 		  general_utils.c
 
 SRCS	= $(addprefix $(SRCDIR), $(SRC))
