@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 15:59:50 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/19 16:27:20 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 void		print_symbol(uint64_t n_value, char letter, char *symbol_name, int arch_type)
 {
 	if (arch_type == 64)
-		(letter == 'U') ? ft_printf("%-17c %c %s\n", ' ', letter, symbol_name)
-			: ft_printf("%017llx %c %s\n", n_value, letter, symbol_name);
+		(letter == 'U') ? ft_printf("%-16c %c %s\n", ' ', letter, symbol_name)
+			: ft_printf("%016llx %c %s\n", n_value, letter, symbol_name);
 	else if (arch_type == 32)
-		(letter == 'U') ? ft_printf("%-7c %c %s\n", ' ', letter, symbol_name)
-			: ft_printf("%07llx %c %s\n", n_value, letter, symbol_name);
+		(letter == 'U') ? ft_printf("%-6c %c %s\n", ' ', letter, symbol_name)
+			: ft_printf("%06llx %c %s\n", n_value, letter, symbol_name);
 }
 
 void		get_symbol(uint64_t n_value, char *symbol_name, t_nlist_64 *symtab, int i)
 {
 	if ((symtab[i].n_type & N_STAB))
-		print_symbol(n_value, 'S', symbol_name, 64);
+	;//	print_symbol(n_value, 'S', symbol_name, 64);
 	else if ((symtab[i].n_type & N_TYPE) == N_UNDF)
 		print_symbol(n_value, 'U', symbol_name, 64);
 	else if ((symtab[i].n_type & N_TYPE) == N_ABS)
@@ -42,7 +42,7 @@ void		get_symbol(uint64_t n_value, char *symbol_name, t_nlist_64 *symtab, int i)
 		print_symbol(n_value, 'U', symbol_name, 64);
 }
 
-void		run_through(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_nlist_64 *symtab)
+void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_nlist_64 *symtab)
 {
 	uint32_t		i;
 	t_nlist_64		*nlist_64;
@@ -65,12 +65,6 @@ void		run_through(t_load_command *load_command, t_mach_header_64 *mach_header_64
 		}
 	}
 }
-
-void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_nlist_64 *symtab)
-{
-	run_through(load_command, mach_header_64, symtab);
-}
-
 
 t_nlist_64		*get_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64)
 {
