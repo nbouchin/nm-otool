@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/22 15:59:55 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/22 16:45:03 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,20 @@ void		print_symbol(uint64_t n_value, char letter, char *symbol_name, int arch_ty
 			: ft_printf("%06llx %c %s\n", n_value, letter, symbol_name);
 }
 
+char		get_type_char(t_metadata *metadata, int i)
+{
+	char	to_ret;
+
+	to_ret = 'U';
+	if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_TEXT))
+		to_ret = 'T';
+	else if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_DATA))
+		to_ret = 'D';
+	else if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_BSS))
+		to_ret = 'B';
+	return (to_ret);
+}
+
 void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
 {
 	int		j;
@@ -34,12 +48,7 @@ void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int 
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
 		print_symbol(n_value, 'A', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
-	{
-		ft_printf("TEST : %s\n", metadata->sectab[metadata->symtab[i].n_sect - 1].sectname);
-		print_symbol(n_value, 'T', symbol_name, 64);
-	}
-	else if ((metadata->symtab[i].n_type & N_TYPE) == N_PBUD)
-		print_symbol(n_value, 'P', symbol_name, 64);
+		print_symbol(n_value, get_type_char(metadata, i), symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
 		print_symbol(n_value, 'I', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_EXT))
