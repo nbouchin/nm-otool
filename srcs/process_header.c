@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 17:54:44 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/22 14:20:20 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,13 @@ int		process_header(t_mach_header_64 *mach_header_64, uint32_t magic)
 {
 	static int			pass = 0;
 	uint32_t			ncmds;
-	t_nlist_64			*symtab;
-	t_section_64		*sectab;
 	t_load_command		*load_command;
+	t_metadata			*metadata;
 
 	ncmds = 0;
-	symtab = NULL;
 	load_command = NULL;
 	ncmds = mach_header_64->ncmds;
+	metadata = (t_metadata*)malloc(sizeof(t_metadata));
 	if (magic != MH_MAGIC)//is_64bits(magic))
 	{
 		pass = 1;
@@ -32,14 +31,14 @@ int		process_header(t_mach_header_64 *mach_header_64, uint32_t magic)
 		{
 			if (load_command->cmd == LC_SEGMENT_64)
 			{
-				sectab = get_section(load_command, mach_header_64);
+				metadata->sectab = get_section(load_command, mach_header_64);
 			}
 			else if (load_command->cmd == LC_SYMTAB)
 			{
-				symtab = get_symtab(load_command, mach_header_64);
-				print_symtab(load_command, mach_header_64, symtab);
-				free (symtab);
-				free (sectab);
+				metadata->symtab = get_symtab(load_command, mach_header_64);
+				print_symtab(load_command, mach_header_64, metadata);
+				free (metadata->symtab);
+				free (metadata->sectab);
 			}
 			load_command = (t_load_command*)((char*)load_command + load_command->cmdsize);
 		}
@@ -51,9 +50,9 @@ int		process_header(t_mach_header_64 *mach_header_64, uint32_t magic)
 		{
 			if (load_command->cmd == LC_SYMTAB)
 			{
-				symtab = get_symtab(load_command, mach_header_64);
-				print_symtab(load_command, mach_header_64, symtab);
-				free (symtab);
+				metadata->symtab = get_symtab(load_command, mach_header_64);
+				print_symtab(load_command, mach_header_64, metadata);
+				free (metadata->symtab);
 			}
 			load_command = (t_load_command*)((char*)load_command + load_command->cmdsize);
 		}

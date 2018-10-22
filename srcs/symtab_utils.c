@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 17:08:50 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/22 14:21:47 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void		get_symbol(uint64_t n_value, char *symbol_name, t_nlist_64 *symtab, int i)
 		print_symbol(n_value, 'E', symbol_name, 64);
 }
 
-void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_nlist_64 *symtab)
+void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata)
 {
 	uint32_t		i;
 	t_nlist_64		*nlist_64;
@@ -53,12 +53,12 @@ void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_6
 	{
 		if (mach_header_64->magic != MH_MAGIC)
 		{
-			get_symbol(symtab[i].n_value, (char *)string_table + symtab[i].n_un.n_strx, symtab, i);
+			get_symbol(metadata->symtab[i].n_value, (char *)string_table + metadata->symtab[i].n_un.n_strx, metadata->symtab, i);
 			nlist_64 += 1;
 		}
 		else
 		{
-			get_symbol(((t_nlist*)symtab)[i].n_value, (char *)string_table + ((t_nlist*)symtab)[i].n_un.n_strx, symtab, i);
+			get_symbol(((t_nlist*)metadata->symtab)[i].n_value, (char *)string_table + ((t_nlist*)metadata->symtab)[i].n_un.n_strx, metadata->symtab, i);
 			nlist_64 = (t_nlist_64*)((t_nlist*)nlist_64 + 1);
 		}
 	}

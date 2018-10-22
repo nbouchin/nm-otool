@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/22 13:48:45 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/22 13:54:49 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,5 @@ t_section_64	*get_section(t_load_command *load_command, t_mach_header_64 *mach_h
 		else
 			section = (t_section_64*)((t_section*)section + 1);
 	}
-	i = -1;
-	while (++i < (short)segment_command->nsects)
-		printf("%s\n", sectab[i].sectname);
 	return sectab;
 }
