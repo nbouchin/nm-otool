@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/22 14:21:47 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/22 14:39:31 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,21 @@ void		print_symbol(uint64_t n_value, char letter, char *symbol_name, int arch_ty
 			: ft_printf("%06llx %c %s\n", n_value, letter, symbol_name);
 }
 
-void		get_symbol(uint64_t n_value, char *symbol_name, t_nlist_64 *symtab, int i)
+void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
 {
-	if ((symtab[i].n_type & N_STAB))
+	if ((metadata->symtab[i].n_type & N_STAB))
 	;//	print_symbol(n_value, 'S', symbol_name, 64);
-	else if ((symtab[i].n_type & N_TYPE) == N_UNDF)
+	else if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
 		print_symbol(n_value, 'U', symbol_name, 64);
-	else if ((symtab[i].n_type & N_TYPE) == N_ABS)
+	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
 		print_symbol(n_value, 'A', symbol_name, 64);
-	else if ((symtab[i].n_type & N_TYPE) == N_SECT)
+	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
 		print_symbol(n_value, 'T', symbol_name, 64);
-	else if ((symtab[i].n_type & N_TYPE) == N_PBUD)
+	else if ((metadata->symtab[i].n_type & N_TYPE) == N_PBUD)
 		print_symbol(n_value, 'P', symbol_name, 64);
-	else if ((symtab[i].n_type & N_TYPE) == N_INDR)
+	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
 		print_symbol(n_value, 'I', symbol_name, 64);
-	else if ((symtab[i].n_type & N_EXT))
+	else if ((metadata->symtab[i].n_type & N_EXT))
 		print_symbol(n_value, 'E', symbol_name, 64);
 }
 
@@ -53,12 +53,12 @@ void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_6
 	{
 		if (mach_header_64->magic != MH_MAGIC)
 		{
-			get_symbol(metadata->symtab[i].n_value, (char *)string_table + metadata->symtab[i].n_un.n_strx, metadata->symtab, i);
+			get_symbol(metadata->symtab[i].n_value, (char *)string_table + metadata->symtab[i].n_un.n_strx, metadata, i);
 			nlist_64 += 1;
 		}
 		else
 		{
-			get_symbol(((t_nlist*)metadata->symtab)[i].n_value, (char *)string_table + ((t_nlist*)metadata->symtab)[i].n_un.n_strx, metadata->symtab, i);
+			get_symbol(((t_nlist*)metadata->symtab)[i].n_value, (char *)string_table + ((t_nlist*)metadata->symtab)[i].n_un.n_strx, metadata, i);
 			nlist_64 = (t_nlist_64*)((t_nlist*)nlist_64 + 1);
 		}
 	}

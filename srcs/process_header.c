@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/22 14:20:20 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/22 14:25:57 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,6 @@ int		process_header(t_mach_header_64 *mach_header_64, uint32_t magic)
 			load_command = (t_load_command*)((char*)load_command + load_command->cmdsize);
 		}
 	}
+	free(metadata);
 	return (1);
 }
