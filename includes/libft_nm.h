@@ -24,11 +24,12 @@ typedef struct nlist				t_nlist;
 
 typedef struct						s_metadata
 {
+	int								nsect;
 	t_section_64					*sectab;	
 	t_nlist_64						*symtab;
 }									t_metadata;
 
-t_section_64						*get_section(t_load_command *load_command, t_mach_header_64 *mach_header_64);
+t_section_64						*get_section(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata);
 int									is_magic(uint32_t magic);
 int									is_fat(uint32_t magic);
 int									is_mach(uint32_t magic);

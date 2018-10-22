@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/22 14:39:31 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/22 15:59:55 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ void		print_symbol(uint64_t n_value, char letter, char *symbol_name, int arch_ty
 
 void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
 {
+	int		j;
+
+	j = 0;
 	if ((metadata->symtab[i].n_type & N_STAB))
 	;//	print_symbol(n_value, 'S', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
@@ -31,7 +34,10 @@ void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int 
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
 		print_symbol(n_value, 'A', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
+	{
+		ft_printf("TEST : %s\n", metadata->sectab[metadata->symtab[i].n_sect - 1].sectname);
 		print_symbol(n_value, 'T', symbol_name, 64);
+	}
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_PBUD)
 		print_symbol(n_value, 'P', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
