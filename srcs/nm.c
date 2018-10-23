@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/19 13:47:10 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/23 12:30:24 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		ft_nm(t_mach_header_64 *mach_header_64)
 {
-	if (mach_header_64->magic == FAT_CIGAM)
+	if (is_fat(mach_header_64->magic))
 		process_fat_header((t_fat_header*)mach_header_64);
 	else
 		process_header(mach_header_64, mach_header_64->magic);
@@ -56,7 +56,6 @@ int		main(int argc, char **argv)
 			munmap(mach_header_64, buf.st_size);
 			close(fd);
 			(nb_file + 1 < argc) ? ft_putendl("") : 0;
-
 		}
 	}
 }

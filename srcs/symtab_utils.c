@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/22 16:45:03 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/23 12:47:20 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,13 @@ char		get_type_char(t_metadata *metadata, int i)
 		to_ret = 'D';
 	else if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_BSS))
 		to_ret = 'B';
+	else if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_COMMON))
+		to_ret = 'C';
 	return (to_ret);
 }
 
 void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
 {
-	int		j;
-
-	j = 0;
 	if ((metadata->symtab[i].n_type & N_STAB))
 	;//	print_symbol(n_value, 'S', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
