@@ -6,12 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/23 15:24:59 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/23 15:39:15 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
-
 
 t_metadata	*get_metadata_64(t_mach_header_64 *mach_header_64)
 {

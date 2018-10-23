@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/23 12:30:24 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/23 15:49:24 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,11 @@ int		main(int argc, char **argv)
 		if (fstat(fd, &buf) == -1)
 		{
 			ft_printf("%s: No such file or directory.\n", argv[nb_file]);
-			(nb_file + 1 < argc) ? ft_putendl("") : 0;
+			continue ;
+		}
+		if (S_ISDIR(buf.st_mode))
+		{
+			ft_printf("%s: is a directory.\n", argv[nb_file]);
 			continue ;
 		}
 		mach_header_64 = mmap(NULL, buf.st_size, PROT_WRITE | PROT_READ, MAP_PRIVATE, fd, 0);
@@ -47,7 +51,7 @@ int		main(int argc, char **argv)
 		if (!is_magic(mach_header_64->magic))
 		{
 			munmap(mach_header_64, buf.st_size);
-			ft_printf("nm: %s The file was not recognized as a valid object file\n", argv[nb_file]);
+			ft_printf("nm: %s The file was not recognized as a valid object file\n\n", argv[nb_file]);
 		}
 		else
 		{
