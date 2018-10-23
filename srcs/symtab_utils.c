@@ -6,20 +6,74 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/23 12:47:20 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/23 16:55:47 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
+char	*ret_buff(const int addr)
+{
+	const char	*digits;
+	size_t		nb;
+	char		*buffer;
+	size_t		len;
+
+	digits = "0123456789abcdef";
+	len = 0;
+	nb = (size_t)addr;
+	buffer = malloc(sizeof(char) * 8);
+	if (nb == 0)
+		ft_putchar('0');
+	while (nb > 0)
+	{
+		buffer[len++] = digits[(size_t)nb % 16];
+		nb /= 16;
+	}
+	ft_strrev(buffer);
+	return buffer;
+}
+
 void		print_symbol(uint64_t n_value, char letter, char *symbol_name, int arch_type)
 {
+	char	*str;
+	char	*to_print;
+	int		len;
+	int		i;
+
+	i = 7;
+	len = 7;
+	to_print = ft_strnew(16);
 	if (arch_type == 64)
-		(letter == 'U') ? ft_printf("%-16c %c %s\n", ' ', letter, symbol_name)
-			: ft_printf("%016llx %c %s\n", n_value, letter, symbol_name);
+	{
+		if (letter == 'U')
+		{
+			ft_putstr("\t\t");
+			ft_putchar(' ');
+			ft_putchar(letter);
+			ft_putchar(' ');
+			ft_putendl(symbol_name);
+		}
+		else
+		{
+			str = ret_buff(n_value);
+			to_print = ft_strcpy(to_print, "0000001");
+			len += 8 - ft_strlen(str);
+			while (i < len)
+				to_print[i++] = '0';
+			to_print = ft_strcat(to_print, str);
+			ft_putstr(to_print);
+			ft_putchar(' ');
+			ft_putchar(letter);
+			ft_putchar(' ');
+			ft_putendl(symbol_name);
+		}
+	}
 	else if (arch_type == 32)
+	{
 		(letter == 'U') ? ft_printf("%-6c %c %s\n", ' ', letter, symbol_name)
 			: ft_printf("%06llx %c %s\n", n_value, letter, symbol_name);
+	}
 }
 
 char		get_type_char(t_metadata *metadata, int i)
@@ -41,7 +95,7 @@ char		get_type_char(t_metadata *metadata, int i)
 void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
 {
 	if ((metadata->symtab[i].n_type & N_STAB))
-	;//	print_symbol(n_value, 'S', symbol_name, 64);
+		;//	print_symbol(n_value, 'S', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
 		print_symbol(n_value, 'U', symbol_name, 64);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
