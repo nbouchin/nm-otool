@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 13:18:53 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/25 17:10:22 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata, t_segment_command_64 *sc_64)
+t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata, t_segment_command_64 const *sc_64)
 {
 	metadata->nsect += sc_64->nsects;
 	sectab = (sectab == NULL) ? malloc(sc_64->nsects * sizeof(t_section_64))
@@ -20,7 +20,7 @@ t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata, t_segm
 	return (sectab);
 }
 
-t_section_64	*alloc_sectab(t_mach_header_64 *mach_header_64, t_section_64 *sectab, t_metadata *metadata, t_segment_command *sc)
+t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64, t_section_64 *sectab, t_metadata *metadata, t_segment_command const *sc)
 {
 	if (mach_header_64->magic == MH_CIGAM)
 	{
@@ -37,7 +37,7 @@ t_section_64	*alloc_sectab(t_mach_header_64 *mach_header_64, t_section_64 *secta
 	return (sectab);
 }
 
-t_section_64	*get_sectab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata)
+t_section_64	*get_sectab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata)
 {
 	static t_section_64		*sectab = NULL;
 	t_section_64		   	*section;
@@ -59,7 +59,7 @@ t_section_64	*get_sectab(t_load_command *load_command, t_mach_header_64 *mach_he
 	return (sectab);
 }
 
-t_section_64	*get_current_section(t_load_command *load_command, t_mach_header_64 *mach_header_64)
+t_section_64	*get_current_section(t_load_command const *load_command, t_mach_header_64 const *mach_header_64)
 {
 	t_section_64		   	*section;
 	t_segment_command_64	*segment_command_64;
@@ -78,7 +78,7 @@ t_section_64	*get_current_section(t_load_command *load_command, t_mach_header_64
 	return (section);
 }
 
-t_section_64	*get_section(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata)
+t_section_64	*get_section(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata)
 {
 	int            i;
 	t_section_64   *sectab;

@@ -29,16 +29,16 @@ typedef struct						s_metadata
 	t_nlist_64						*symtab;
 }									t_metadata;
 
-t_section_64						*get_section(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata);
+t_section_64						*get_section(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata);
 int									is_magic(uint32_t magic);
 int									is_fat(uint32_t magic);
 int									is_mach(uint32_t magic);
 int									is_64bits(uint32_t magic);
 int									is_32bits(uint32_t magic);
-int									ft_nm(t_mach_header_64 *mach_header_64);
-int									process_fat_header(t_fat_header *fat_header);
-int									process_header(t_mach_header_64 *mach_header_64, uint32_t magic);
-void								print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata);
-void								print_big_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata);
-t_nlist_64							*get_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64);
-t_nlist_64							*get_big_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64);
+int									ft_nm(t_mach_header_64 const *mach_header_64);
+int									process_fat_header(t_fat_header const *fat_header);
+int									process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic);
+void								print_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata const *metadata);
+void								print_big_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata const *metadata);
+t_nlist_64							*get_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64);
+t_nlist_64							*get_big_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64);

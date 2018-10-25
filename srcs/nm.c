@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 12:27:05 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/25 17:11:53 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		ft_nm(t_mach_header_64 *mach_header_64)
+int		ft_nm(t_mach_header_64 const *mach_header_64)
 {
 	if (is_fat(mach_header_64->magic))
 		process_fat_header((t_fat_header*)mach_header_64);

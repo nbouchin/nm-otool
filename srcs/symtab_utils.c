@@ -6,23 +6,23 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 16:32:02 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/25 17:00:41 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-void		print_symbol(uint64_t n_value, char letter, char *symbol_name, int arch_type)
+void		print_symbol(uint64_t const n_value, char const letter, char const *symbol_name, int const arch_type)
 {
 	if (arch_type == 64)
-		(letter == 'U') ? ft_printf("%-16c %c %s\n", ' ', letter, symbol_name)
+		(letter == 'U' || letter == 'u') ? ft_printf("%-16c %c %s\n", ' ', letter, symbol_name)
 			: ft_printf("%016llx %c %s\n", n_value, letter, symbol_name);
 	else if (arch_type == 32)
-		(letter == 'U') ? ft_printf("%-8c %c %s\n", ' ', letter, symbol_name)
+		(letter == 'U' || letter == 'u') ? ft_printf("%-8c %c %s\n", ' ', letter, symbol_name)
 			: ft_printf("%08llx %c %s\n", (uint32_t)n_value, letter, symbol_name);
 }
 
-char		get_type_char(t_metadata *metadata, int i)
+char		get_type_char(t_metadata const *metadata, int const i)
 {
 	char	to_ret;
 
@@ -38,7 +38,7 @@ char		get_type_char(t_metadata *metadata, int i)
 	return (to_ret);
 }
 
-void		get_symbol_64(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
+void		get_symbol_64(uint64_t const n_value, char const *symbol_name, t_metadata const *metadata, int const i)
 {
 	char	letter;
 
@@ -51,13 +51,13 @@ void		get_symbol_64(uint64_t n_value, char *symbol_name, t_metadata *metadata, i
 		letter = get_type_char(metadata, i);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
 		letter = 'I';
-	else if ((metadata->symtab[i].n_type & N_EXT))
+	if ((metadata->symtab[i].n_type & N_EXT))
 		letter = ft_tolower(letter);
 	if (letter != 0)
 		print_symbol(n_value, letter, symbol_name, 64);
 }
 
-void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
+void		get_symbol(uint64_t const n_value, char const *symbol_name, t_metadata const *metadata, int const i)
 {
 	char	letter;
 
@@ -70,18 +70,18 @@ void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int 
 		letter = get_type_char(metadata, i);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
 		letter = 'I';
-	else if ((metadata->symtab[i].n_type & N_EXT))
+	if ((metadata->symtab[i].n_type & N_EXT))
 		letter = ft_tolower(letter);
 	if (letter != 0)
 		print_symbol(n_value, letter, symbol_name, 32);
 }
 
-void		print_big_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata)
+void		print_big_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata const *metadata)
 {
 	uint32_t		i;
 	char			*string_table;
 
-	i = -1; 
+	i = -1;
 	string_table = (char *)((char *)mach_header_64 + OSSwapInt32(((t_symtab_command*)load_command)->stroff));
 	while (++i < OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
 	{
@@ -92,7 +92,7 @@ void		print_big_symtab(t_load_command *load_command, t_mach_header_64 *mach_head
 	}
 }
 
-void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata)
+void		print_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata const *metadata)
 {
 	uint32_t		i;
 	char			*string_table;
@@ -108,7 +108,7 @@ void		print_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_6
 	}
 }
 
-t_nlist_64		*get_big_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64)
+t_nlist_64		*get_big_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			i;
 	t_nlist_64			*nlist_64;
@@ -125,7 +125,7 @@ t_nlist_64		*get_big_symtab(t_load_command *load_command, t_mach_header_64 *mach
 	return (symtab);
 }
 
-t_nlist_64		*get_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64)
+t_nlist_64		*get_symtab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			i;
 	t_nlist_64			*nlist_64;

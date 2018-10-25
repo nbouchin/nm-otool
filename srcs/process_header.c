@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 15:06:41 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/25 17:11:12 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-t_metadata	*get_metadata_64(t_mach_header_64 *mach_header_64)
+t_metadata	*get_metadata_64(t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			ncmds;
 	t_load_command		*load_command;
@@ -36,7 +36,7 @@ t_metadata	*get_metadata_64(t_mach_header_64 *mach_header_64)
 	return metadata;
 }
 
-t_metadata	*get_big_metadata_32(t_mach_header_64 *mach_header_64)
+t_metadata	*get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			ncmds;
 	t_load_command		*load_command;
@@ -60,7 +60,7 @@ t_metadata	*get_big_metadata_32(t_mach_header_64 *mach_header_64)
 	return (metadata);
 }
 
-t_metadata	*get_metadata_32(t_mach_header_64 *mach_header_64)
+t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			ncmds;
 	t_load_command		*load_command;
@@ -84,7 +84,7 @@ t_metadata	*get_metadata_32(t_mach_header_64 *mach_header_64)
 	return (metadata);
 }
 
-int		process_header(t_mach_header_64 *mach_header_64, uint32_t magic)
+int		process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic)
 {
 	static int			pass = 0;
 	t_metadata			*metadata;

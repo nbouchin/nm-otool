@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 12:27:00 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/25 17:11:44 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		process_fat_header(t_fat_header *fat_header)
+int		process_fat_header(t_fat_header const *fat_header)
 {
 	uint32_t			i;
 	t_fat_arch			*fat_arch;
