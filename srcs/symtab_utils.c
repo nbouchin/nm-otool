@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 15:54:52 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/25 16:32:02 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,30 +40,40 @@ char		get_type_char(t_metadata *metadata, int i)
 
 void		get_symbol_64(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
 {
+	char	letter;
+
+	letter = 0;
 	if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
-		print_symbol(n_value, 'U', symbol_name, 64);
+		letter = 'U';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
-		print_symbol(n_value, 'A', symbol_name, 64);
+		letter = 'A';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
-		print_symbol(n_value, get_type_char(metadata, i), symbol_name, 64);
+		letter = get_type_char(metadata, i);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
-		print_symbol(n_value, 'I', symbol_name, 64);
+		letter = 'I';
 	else if ((metadata->symtab[i].n_type & N_EXT))
-		print_symbol(n_value, 'u', symbol_name, 64);
+		letter = ft_tolower(letter);
+	if (letter != 0)
+		print_symbol(n_value, letter, symbol_name, 64);
 }
 
 void		get_symbol(uint64_t n_value, char *symbol_name, t_metadata *metadata, int i)
 {
+	char	letter;
+
+	letter = 0;
 	if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
-		print_symbol(n_value, 'U', symbol_name, 32);
+		letter = 'U';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
-		print_symbol(n_value, 'A', symbol_name, 32);
+		letter = 'A';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
-		print_symbol(n_value, get_type_char(metadata, i), symbol_name, 32);
+		letter = get_type_char(metadata, i);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
-		print_symbol(n_value, 'I', symbol_name, 32);
+		letter = 'I';
 	else if ((metadata->symtab[i].n_type & N_EXT))
-		print_symbol(n_value, 'u', symbol_name, 32);
+		letter = ft_tolower(letter);
+	if (letter != 0)
+		print_symbol(n_value, letter, symbol_name, 32);
 }
 
 void		print_big_symtab(t_load_command *load_command, t_mach_header_64 *mach_header_64, t_metadata *metadata)
