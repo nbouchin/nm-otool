@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/26 11:14:13 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 13:43:48 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ char		get_type_char(t_metadata const *mdata, int const i)
 	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
 				SECT_BSS))
 		to_ret = 'b';
-	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
-				SECT_COMMON))
-		to_ret = 'c';
+//	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
+//				SECT_COMMON))
+//		to_ret = 'c';
 	return (to_ret);
 }
 
