@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/26 14:24:23 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 16:15:18 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ typedef struct						s_metadata
 }									t_metadata;
 
 t_section_64						*get_section(t_load_command const
+*load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata);
+t_section_64						*get_big_section(t_load_command const
 *load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata);
 int									is_magic(uint32_t magic);
 int									is_fat(uint32_t magic);

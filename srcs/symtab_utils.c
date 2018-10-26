@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/26 13:43:48 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 17:19:45 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ char		get_type_char(t_metadata const *mdata, int const i)
 	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
 				SECT_BSS))
 		to_ret = 'b';
-//	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
-//				SECT_COMMON))
-//		to_ret = 'c';
+	//	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
+	//				SECT_COMMON))
+	//		to_ret = 'c';
 	return (to_ret);
 }
 
@@ -89,6 +89,27 @@ void		get_symbol(uint64_t const n_value, char const *symbol_name,
 		print_symbol(n_value, letter, symbol_name, 32);
 }
 
+void		print_symtab(t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64, t_metadata const *metadata)
+{
+	uint32_t		i;
+	char			*string_table;
+
+	i = -1;
+	string_table = (char *)((char *)mach_header_64 +
+			((t_symtab_command*)load_command)->stroff);
+	while (++i < ((t_symtab_command*)load_command)->nsyms)
+	{
+		if (is_64bits(mach_header_64->magic))
+			get_symbol_64(metadata->symtab[i].n_value, (char *)string_table
+					+ metadata->symtab[i].n_un.n_strx, metadata, i);
+		else
+			get_symbol((metadata->symtab)[i].n_value, (char *)string_table
+					+ (metadata->symtab)[i].n_un.n_strx, metadata, i);
+	}
+}
+
+
 void		print_big_symtab(t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata const *mdata)
 {
@@ -104,29 +125,10 @@ void		print_big_symtab(t_load_command const *load_command,
 			get_symbol_64(OSSwapInt32(mdata->symtab[i].n_value), (char *)stable
 					+ OSSwapInt32(mdata->symtab[i].n_un.n_strx), mdata, i);
 		else
-			get_symbol(OSSwapInt32(((t_nlist*)mdata->symtab)[i].n_value),
-			(char*)stable +
-			OSSwapInt32(((t_nlist*)mdata->symtab)[i].n_un.n_strx), mdata, i);
-	}
-}
-
-void		print_symtab(t_load_command const *load_command,
-		t_mach_header_64 const *mach_header_64, t_metadata const *metadata)
-{
-	uint32_t		i;
-	char			*string_table;
-
-	i = -1;
-	string_table = (char *)((char *)mach_header_64 +
-	((t_symtab_command*)load_command)->stroff);
-	while (++i < ((t_symtab_command*)load_command)->nsyms)
-	{
-		if (is_64bits(mach_header_64->magic))
-			get_symbol_64(metadata->symtab[i].n_value, (char *)string_table
-			+ metadata->symtab[i].n_un.n_strx, metadata, i);
-		else
-			get_symbol((metadata->symtab)[i].n_value, (char *)string_table
-			+ (metadata->symtab)[i].n_un.n_strx, metadata, i);
+		{
+			get_symbol(OSSwapInt32((mdata->symtab)[i].n_value),
+					(char*)stable + OSSwapInt32(((t_nlist*)mdata->symtab)[i].n_un.n_strx), mdata, i);
+		}
 	}
 }
 
@@ -139,13 +141,16 @@ t_nlist_64		*get_big_symtab(t_load_command const *load_command,
 
 	i = -1;
 	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
-	+ OSSwapInt32(((t_symtab_command*)load_command)->symoff));
+			+ OSSwapInt32(((t_symtab_command*)load_command)->symoff));
 	symtab = malloc(OSSwapInt32(((t_symtab_command*)load_command)->nsyms)
-	* sizeof(t_nlist_64));
+			* sizeof(t_nlist_64));
 	while (++i < OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
 	{
 		symtab[i] = *nlist_64;
-		nlist_64 += 1;
+		if (is_64bits(mach_header_64->magic))
+			nlist_64++;
+		else
+			nlist_64 = (t_nlist_64*)((t_nlist*)nlist_64 + 1);
 	}
 	return (symtab);
 }
@@ -159,9 +164,9 @@ t_nlist_64		*get_symtab(t_load_command const *load_command,
 
 	i = -1;
 	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
-	+ ((t_symtab_command*)load_command)->symoff);
+			+ ((t_symtab_command*)load_command)->symoff);
 	symtab = malloc(((t_symtab_command*)load_command)->nsyms
-	* sizeof(t_nlist_64));
+			* sizeof(t_nlist_64));
 	while (++i < ((t_symtab_command*)load_command)->nsyms)
 	{
 		symtab[i] = *nlist_64;
