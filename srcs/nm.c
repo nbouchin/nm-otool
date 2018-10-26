@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 17:11:53 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 11:09:05 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ int		ft_nm(t_mach_header_64 const *mach_header_64)
 	else
 		process_header(mach_header_64, mach_header_64->magic);
 	return (1);
+}
+
+void	print_error(char const *file_name, char const *error)
+{
+	ft_putstr_fd("nm: ", 2);
+	ft_putstr_fd(file_name, 2);
+	ft_putendl_fd(error, 2);
 }
 
 int		main(int argc, char **argv)
@@ -34,19 +41,16 @@ int		main(int argc, char **argv)
 		fd = open(argv[nb_file], O_RDONLY);
 		if (fstat(fd, &buf) == -1)
 		{
-			ft_putstr_fd("nm: ", 2);
-			ft_putstr_fd(argv[nb_file], 2);
-			ft_putendl_fd(": No such file or directory.", 2);
+			print_error(argv[nb_file], ": No such file or directory.");
 			continue ;
 		}
 		if (S_ISDIR(buf.st_mode))
 		{
-			ft_putstr_fd("nm: ", 2);
-			ft_putstr_fd(argv[nb_file], 2);
-			ft_putendl_fd(": is a directory.", 2);
+			print_error(argv[nb_file], ": is a directory.");
 			continue ;
 		}
-		mach_header_64 = mmap(NULL, buf.st_size, PROT_WRITE | PROT_READ, MAP_PRIVATE, fd, 0);
+		mach_header_64 = mmap(NULL, buf.st_size, PROT_WRITE
+				| PROT_READ, MAP_PRIVATE, fd, 0);
 		if (mach_header_64 == MAP_FAILED)
 		{
 			munmap(mach_header_64, buf.st_size);
@@ -55,9 +59,7 @@ int		main(int argc, char **argv)
 		if (!is_magic(mach_header_64->magic))
 		{
 			munmap(mach_header_64, buf.st_size);
-			ft_putstr_fd("nm: ", 2);
-			ft_putstr_fd(argv[nb_file], 2);
-			ft_putendl_fd(" The file was not recognized as a valide object file\n", 2);
+			print_error(argv[nb_file], " The file was not recognized as a valide object file\n");
 		}
 		else
 		{

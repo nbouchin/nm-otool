@@ -6,13 +6,14 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/26 09:35:07 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 11:09:27 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-t_section_64	*sectab_realloc(t_section_64 *sectab, size_t new_size, t_metadata *metadata)
+t_section_64	*sectab_realloc(t_section_64 *sectab, size_t new_size,
+		t_metadata *metadata)
 {
 	t_section_64	*swap;
 
@@ -22,7 +23,8 @@ t_section_64	*sectab_realloc(t_section_64 *sectab, size_t new_size, t_metadata *
 	return (swap);
 }
 
-t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata, t_segment_command_64 const *sc_64)
+t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata,
+		t_segment_command_64 const *sc_64)
 {
 	metadata->nsect += sc_64->nsects;
 	sectab = (sectab == NULL) ? malloc(sc_64->nsects * sizeof(t_section_64))
@@ -30,27 +32,31 @@ t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata, t_segm
 	return (sectab);
 }
 
-t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64, t_section_64 *sectab, t_metadata *metadata, t_segment_command const *sc)
+t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64,
+	t_section_64 *sectab, t_metadata *mdata, t_segment_command const *sc)
 {
 	if (mach_header_64->magic == MH_CIGAM)
 	{
-		metadata->nsect += OSSwapInt32(sc->nsects);
-		sectab = (sectab == NULL) ? malloc(OSSwapInt32(sc->nsects) * sizeof(t_section_64))
-		: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), metadata);
+		mdata->nsect += OSSwapInt32(sc->nsects);
+		sectab = (sectab == NULL)
+		? malloc(OSSwapInt32(sc->nsects) * sizeof(t_section_64))
+		: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), mdata);
 	}
 	else
 	{
-		metadata->nsect += sc->nsects;
-		sectab = (sectab == NULL) ? malloc(sc->nsects * sizeof(t_section_64))
-		: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), metadata);
+		mdata->nsect += sc->nsects;
+		sectab = (sectab == NULL)
+		? malloc(sc->nsects * sizeof(t_section_64))
+		: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), mdata);
 	}
 	return (sectab);
 }
 
-t_section_64	*get_sectab(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata)
+t_section_64	*get_sectab(t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64, t_metadata *metadata)
 {
 	static t_section_64		*sectab = NULL;
-	t_section_64		   	*section;
+	t_section_64			*section;
 	t_segment_command_64	*sc_64;
 	t_segment_command		*sc;
 
@@ -69,9 +75,10 @@ t_section_64	*get_sectab(t_load_command const *load_command, t_mach_header_64 co
 	return (sectab);
 }
 
-t_section_64	*get_current_section(t_load_command const *load_command, t_mach_header_64 const *mach_header_64)
+t_section_64	*get_current_section(t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64)
 {
-	t_section_64		   	*section;
+	t_section_64			*section;
 	t_segment_command_64	*segment_command_64;
 	t_segment_command		*segment_command;
 
@@ -88,11 +95,12 @@ t_section_64	*get_current_section(t_load_command const *load_command, t_mach_hea
 	return (section);
 }
 
-t_section_64	*get_section(t_load_command const *load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata)
+t_section_64	*get_section(t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64, t_metadata *metadata)
 {
-	int            i;
-	t_section_64   *sectab;
-	t_section_64   *section;
+	int				i;
+	t_section_64	*sectab;
+	t_section_64	*section;
 
 	i = metadata->nsect;
 	sectab = get_sectab(load_command, mach_header_64, metadata);
