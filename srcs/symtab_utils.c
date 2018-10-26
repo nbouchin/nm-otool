@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 17:00:41 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 09:21:31 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,15 @@ char		get_type_char(t_metadata const *metadata, int const i)
 {
 	char	to_ret;
 
-	to_ret = 'S';
+	to_ret = 's';
 	if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_TEXT))
-		to_ret = 'T';
+		to_ret = 't';
 	else if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_DATA))
-		to_ret = 'D';
+		to_ret = 'd';
 	else if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_BSS))
-		to_ret = 'B';
+		to_ret = 'b';
 	else if (!ft_strcmp(metadata->sectab[metadata->symtab[i].n_sect - 1].sectname, SECT_COMMON))
-		to_ret = 'C';
+		to_ret = 'c';
 	return (to_ret);
 }
 
@@ -44,15 +44,15 @@ void		get_symbol_64(uint64_t const n_value, char const *symbol_name, t_metadata 
 
 	letter = 0;
 	if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
-		letter = 'U';
+		letter = 'u';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
-		letter = 'A';
+		letter = 'a';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
 		letter = get_type_char(metadata, i);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
-		letter = 'I';
+		letter = 'i';
 	if ((metadata->symtab[i].n_type & N_EXT))
-		letter = ft_tolower(letter);
+		letter = ft_toupper(letter);
 	if (letter != 0)
 		print_symbol(n_value, letter, symbol_name, 64);
 }
@@ -63,15 +63,15 @@ void		get_symbol(uint64_t const n_value, char const *symbol_name, t_metadata con
 
 	letter = 0;
 	if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
-		letter = 'U';
+		letter = 'u';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
-		letter = 'A';
+		letter = 'a';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
 		letter = get_type_char(metadata, i);
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_INDR)
-		letter = 'I';
+		letter = 'i';
 	if ((metadata->symtab[i].n_type & N_EXT))
-		letter = ft_tolower(letter);
+		letter = ft_toupper(letter);
 	if (letter != 0)
 		print_symbol(n_value, letter, symbol_name, 32);
 }

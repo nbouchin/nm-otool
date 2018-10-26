@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/25 17:10:22 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 09:13:54 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,5 @@ t_section_64	*get_section(t_load_command const *load_command, t_mach_header_64 c
 			section = (t_section_64*)((t_section*)section + 1);
 		i++;
 	}
-	return sectab;
+	return (sectab);
 }
