@@ -6,17 +6,27 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/26 09:13:54 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 09:35:07 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
+t_section_64	*sectab_realloc(t_section_64 *sectab, size_t new_size, t_metadata *metadata)
+{
+	t_section_64	*swap;
+
+	swap = (t_section_64*)malloc(new_size);
+	swap = ft_memcpy(swap, sectab, metadata->nsect);
+	free(sectab);
+	return (swap);
+}
+
 t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata, t_segment_command_64 const *sc_64)
 {
 	metadata->nsect += sc_64->nsects;
 	sectab = (sectab == NULL) ? malloc(sc_64->nsects * sizeof(t_section_64))
-		: realloc(sectab, metadata->nsect * sizeof(t_section_64));// TODO : make a nm realloc
+	: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), metadata);
 	return (sectab);
 }
 
@@ -26,13 +36,13 @@ t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64, t_section_64 
 	{
 		metadata->nsect += OSSwapInt32(sc->nsects);
 		sectab = (sectab == NULL) ? malloc(OSSwapInt32(sc->nsects) * sizeof(t_section_64))
-			: realloc(sectab, metadata->nsect * sizeof(t_section_64));// TODO : make a nm realloc
+		: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), metadata);
 	}
 	else
 	{
 		metadata->nsect += sc->nsects;
 		sectab = (sectab == NULL) ? malloc(sc->nsects * sizeof(t_section_64))
-			: realloc(sectab, metadata->nsect * sizeof(t_section_64));// TODO : make a nm realloc
+		: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), metadata);
 	}
 	return (sectab);
 }
