@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 09:47:32 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 10:09:55 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void		print_big_symtab(t_load_command const *load_command,
 		else
 		{
 			get_symbol(OSSwapInt32((mdata->symtab)[i].n_value), (char*)stable
-					+ OSSwapInt32(((t_nlist*)mdata->symtab)[i].n_un.n_strx), mdata, i);
+					+ OSSwapInt32((mdata->symtab)[i].n_un.n_strx), mdata, i);
 		}
 	}
 }
@@ -148,17 +148,13 @@ t_nlist_64		*get_big_symtab(t_load_command const *load_command,
 			+ OSSwapInt32(((t_symtab_command*)load_command)->symoff));
 	symtab = malloc(OSSwapInt32(((t_symtab_command*)load_command)->nsyms)
 			* sizeof(t_nlist_64));
-	ft_printf("%u\n", OSSwapInt32(((t_symtab_command*)load_command)->nsyms));
 	while (++i < OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
 	{
 		symtab[i] = *nlist_64;
 		if (is_64bits(mach_header_64->magic))
 			nlist_64++;
 		else
-		{
-//			ft_printf("%u\n", OSSwapInt32(((t_nlist*)symtab)[i].n_un.n_strx));
 			nlist_64 = (t_nlist_64*)((t_nlist*)nlist_64 + 1);
-		}
 	}
 	return (symtab);
 }
