@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 11:03:53 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 14:05:58 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <unistd.h>
+# include <ar.h>
 # include "../srcs/libft/includes/libft.h"
 
 typedef struct mach_header_64		t_mach_header_64;
@@ -36,6 +37,7 @@ typedef struct section				t_section;
 typedef struct symtab_command		t_symtab_command;
 typedef struct nlist_64				t_nlist_64;
 typedef struct nlist				t_nlist;
+typedef struct ar_hdr				t_ar_hdr;
 
 typedef struct						s_metadata
 {
