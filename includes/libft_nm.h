@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/26 16:15:18 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 11:03:53 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@ int									is_mach(uint32_t magic);
 int									is_64bits(uint32_t magic);
 int									is_32bits(uint32_t magic);
 int									ft_nm(t_mach_header_64 const
-		*mach_header_64, char const *fname);
+		*mach_header_64, char const *fname, int const argc);
 int									process_fat_header(t_fat_header const
-		*fat_header, char const *fname);
+		*fat_header, char const *fname, int const argc);
 int									process_header(t_mach_header_64 const
-		*mach_header_64, uint32_t const magic, char const *file_name);
+		*mach_header_64, uint32_t const magic, char const *file_name, int const argc);
 void								print_symtab(t_load_command const
 		*load_command, t_mach_header_64 const *mach_header_64,
 		t_metadata const *metadata);

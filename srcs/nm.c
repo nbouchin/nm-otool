@@ -6,18 +6,18 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/26 14:24:59 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 12:38:12 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		ft_nm(t_mach_header_64 const *mach_header_64, char const *fname)
+int		ft_nm(t_mach_header_64 const *mach_header_64, char const *fname, int const argc)
 {
 	if (is_fat(mach_header_64->magic))
-		process_fat_header((t_fat_header*)mach_header_64, fname);
+		process_fat_header((t_fat_header*)mach_header_64, fname, argc);
 	else
-		process_header(mach_header_64, mach_header_64->magic, fname);
+		process_header(mach_header_64, mach_header_64->magic, fname, argc);
 	return (1);
 }
 
@@ -63,11 +63,9 @@ int		main(int argc, char **argv)
 		}
 		else
 		{
-			(argc > 2) ? ft_printf("%s:\n", argv[nb_file]) : 0;
-			ft_nm(mach_header_64, argv[nb_file]);
+			ft_nm(mach_header_64, argv[nb_file], argc);
 			munmap(mach_header_64, buf.st_size);
 			close(fd);
-			(nb_file + 1 < argc) ? ft_putendl("") : 0;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 10:09:55 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 12:50:58 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 void		print_symbol(uint64_t const n_value, char const letter,
 		char const *symname, int const arch_type)
 {
-	(void)n_value;
-	(void)letter;
-	(void)symname;
-	(void)arch_type;
 	if (arch_type == 64)
 		(letter == 'U' || letter == 'u')
 			? ft_printf("%-16c %c %s\n", ' ', letter, symname)
@@ -129,10 +125,8 @@ void		print_big_symtab(t_load_command const *load_command,
 			get_symbol_64(OSSwapInt32(mdata->symtab[i].n_value), (char *)stable
 					+ OSSwapInt32(mdata->symtab[i].n_un.n_strx), mdata, i);
 		else
-		{
 			get_symbol(OSSwapInt32((mdata->symtab)[i].n_value), (char*)stable
 					+ OSSwapInt32((mdata->symtab)[i].n_un.n_strx), mdata, i);
-		}
 	}
 }
 
