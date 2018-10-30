@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 12:44:23 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 16:01:22 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 
 void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata *fmetadata)
 {
-	if (fmetadata->to_print == 0)
+	if (fmetadata->to_print == 0 || fmetadata->argc <= 2)
 		return ;
 	if (fmetadata->subfile)
 		ft_printf("\n%s(%s):\n", fmetadata->fname, fmetadata->subfile);
