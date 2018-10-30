@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 16:17:19 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 10:35:21 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,7 @@ t_nlist_64							*get_symtab(t_load_command const
 		*load_command, t_mach_header_64 const *mach_header_64);
 t_nlist_64							*get_big_symtab(t_load_command const
 		*load_command, t_mach_header_64 const *mach_header_64);
+int									archive_files(t_mach_header_64 const
+		*mach_header_64, t_fmetadata *fmetadata);
 
 #endif

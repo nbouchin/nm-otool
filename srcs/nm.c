@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 16:19:59 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 10:29:20 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ int		archive_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadat
 		{
 			if (!ft_strncmp(ar_hdr->ar_fmag, ARFMAG, 2))
 			{
-		//		if (i != 0)
-		//			ft_printf("\n%s(%s):\n", fname, (char *)ar_hdr + 60);
 				fmetadata->subfile = (char*)ar_hdr + 60;
 				regular_files((t_mach_header_64 *)((char *)ar_hdr
 				+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);

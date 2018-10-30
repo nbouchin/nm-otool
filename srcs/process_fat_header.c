@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 16:10:49 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 10:36:31 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ int		process_fat_header(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 	{
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header
 		+ OSSwapInt32(fat_arch->offset));
+		if (!ft_strncmp((char *)fat_header + OSSwapInt32(fat_arch->offset), ARMAG, SARMAG))
+		{
+			archive_files(mach_header_64, fmetadata);
+			return (1);
+		}
 		process_header(mach_header_64,
 		OSSwapInt32(mach_header_64->magic), fmetadata);
 		fat_arch++;
