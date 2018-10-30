@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 10:29:20 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 12:45:25 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,11 @@ int		main(int argc, char **argv)
 	while (++nb_file < argc)
 	{
 		fd = open(argv[nb_file], O_RDONLY);
-		fmetadata = (t_fmetadata*)malloc(sizeof(t_fmetadata));
+		fmetadata = (t_fmetadata*)ft_memalloc(sizeof(t_fmetadata));
 		fmetadata->fname = ft_strdup(argv[nb_file]);
 		fmetadata->argc = argc;
 		fmetadata->subfile = NULL;
+		fmetadata->to_print = 1;
 		if (fstat(fd, &buf) == -1)
 		{
 			print_error(argv[nb_file], ": No such file or directory.");
@@ -88,13 +89,17 @@ int		main(int argc, char **argv)
 		if (is_magic(mach_header_64->magic))
 		{
 			regular_files(mach_header_64, fmetadata);// TODO: free fmetadata.
+			free(fmetadata);
 			munmap(mach_header_64, buf.st_size);
 			close(fd);
 		}
 		else
 		{
 			if (archive_files(mach_header_64, fmetadata))
+			{
+				free(fmetadata);
 				munmap(mach_header_64, buf.st_size);
+			}
 			else
 			{
 				munmap(mach_header_64, buf.st_size);

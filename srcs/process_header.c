@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 16:23:35 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 12:44:23 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_metadata	*get_metadata_64(t_mach_header_64 const *mach_header_64)
 	t_metadata			*mdata;
 
 	ncmds = mach_header_64->ncmds;
-	mdata = (t_metadata*)malloc(sizeof(t_metadata));
+	mdata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
 	lcommand = (t_load_command*)(mach_header_64 + 1);
 	while (--ncmds)
 	{
@@ -43,7 +43,7 @@ t_metadata	*get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 	t_metadata			*metadata;
 
 	ncmds = OSSwapInt32(mach_header_64->ncmds);
-	metadata = (t_metadata*)malloc(sizeof(t_metadata));
+	metadata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
 	lcommand = (t_load_command*)((t_mach_header*)mach_header_64 + 1);
 	while (--ncmds)
 	{
@@ -68,7 +68,7 @@ t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 	t_metadata			*mdata;
 
 	ncmds = mach_header_64->ncmds;
-	mdata = (t_metadata*)malloc(sizeof(t_metadata));
+	mdata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
 	lcommand = (t_load_command*)((t_mach_header*)mach_header_64 + 1);
 	while (--ncmds)
 	{
@@ -87,7 +87,7 @@ t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 
 void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata *fmetadata)
 {
-	if (is_fat(mach_header_64->magic) && fmetadata->argc > 2)
+	if (fmetadata->to_print == 0)
 		return ;
 	if (fmetadata->subfile)
 		ft_printf("\n%s(%s):\n", fmetadata->fname, fmetadata->subfile);

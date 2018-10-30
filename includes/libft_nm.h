@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 10:35:21 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 11:04:56 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct						s_fmetadata
 	char							*fname;
 	char							*subfile;
 	int								argc;
+	int								to_print;
 }									t_fmetadata;
 
 t_section_64						*get_section(t_load_command const

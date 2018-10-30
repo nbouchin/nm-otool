@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 12:50:58 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 12:46:15 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ t_nlist_64		*get_big_symtab(t_load_command const *load_command,
 	i = -1;
 	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
 			+ OSSwapInt32(((t_symtab_command*)load_command)->symoff));
-	symtab = malloc(OSSwapInt32(((t_symtab_command*)load_command)->nsyms)
+	symtab = ft_memalloc(OSSwapInt32(((t_symtab_command*)load_command)->nsyms)
 			* sizeof(t_nlist_64));
 	while (++i < OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
 	{
@@ -163,7 +163,7 @@ t_nlist_64		*get_symtab(t_load_command const *load_command,
 	i = -1;
 	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
 			+ ((t_symtab_command*)load_command)->symoff);
-	symtab = malloc(((t_symtab_command*)load_command)->nsyms
+	symtab = ft_memalloc(((t_symtab_command*)load_command)->nsyms
 			* sizeof(t_nlist_64));
 	while (++i < ((t_symtab_command*)load_command)->nsyms)
 	{
