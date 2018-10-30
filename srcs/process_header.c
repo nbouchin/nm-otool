@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 16:01:22 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 16:59:11 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,13 @@ t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 
 void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata *fmetadata)
 {
+	if (fmetadata->subfile)
+	{
+		ft_printf("\n%s(%s):\n", fmetadata->fname, fmetadata->subfile);
+		return ;
+	}
 	if (fmetadata->to_print == 0 || fmetadata->argc <= 2)
 		return ;
-	if (fmetadata->subfile)
-		ft_printf("\n%s(%s):\n", fmetadata->fname, fmetadata->subfile);
 	else if (OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC && pass == 2)
 		ft_printf("\n%s (for architecture ppc):\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2)
@@ -115,7 +118,7 @@ int		process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic
 		print_cputype(mach_header_64, pass, fmetadata);
 		metadata = get_metadata_64(mach_header_64);
 	}
-	else if (is_32bits(magic) && (pass == 0 || pass == 2))
+	else if ((is_32bits(magic) && (pass == 0 || pass == 2)))// || fmetadata->new_file == 1
 	{
 		pass = 2;
 		print_cputype(mach_header_64, pass, fmetadata);
@@ -124,6 +127,8 @@ int		process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic
 		else
 			metadata = get_metadata_32(mach_header_64);
 	}
+//	if (fmetadata->new_file)
+//		fmetadata->new_file = 0;
 	free(metadata);
 	return (1);
 }

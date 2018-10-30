@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 15:53:20 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/30 16:03:58 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int		main(int argc, char **argv)
 	{
 		fd = open(argv[nb_file], O_RDONLY);
 		fmetadata = (t_fmetadata*)ft_memalloc(sizeof(t_fmetadata));
-		fmetadata->pass = 0;
+		fmetadata->new_file = 1;
 		fmetadata->fname = ft_strdup(argv[nb_file]);
 		fmetadata->argc = argc;
 		fmetadata->subfile = NULL;
