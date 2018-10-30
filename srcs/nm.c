@@ -6,27 +6,25 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 15:16:59 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 16:19:59 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		regular_files(t_mach_header_64 const *mach_header_64, char const *fname, int const argc)
+int		regular_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
 {
 	if (is_fat(mach_header_64->magic))
-		process_fat_header((t_fat_header*)mach_header_64, fname, argc);
+		process_fat_header((t_fat_header*)mach_header_64, fmetadata);
 	else
-		process_header(mach_header_64, mach_header_64->magic, fname, argc);
+		process_header(mach_header_64, mach_header_64->magic, fmetadata);
 	return (1);
 }
 
-int		archive_files(t_mach_header_64 const *mach_header_64, char const *fname, int const argc)
+int		archive_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
 {
-	int					i;
 	t_ar_hdr			*ar_hdr;
 
-	i = 0;
 	if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
 	{
 		ar_hdr = (t_ar_hdr*)((char *)mach_header_64 + 8);
@@ -34,12 +32,12 @@ int		archive_files(t_mach_header_64 const *mach_header_64, char const *fname, in
 		{
 			if (!ft_strncmp(ar_hdr->ar_fmag, ARFMAG, 2))
 			{
-				if (i != 0)
-					ft_printf("\n%s(%s):\n", fname, (char *)ar_hdr + 60);
+		//		if (i != 0)
+		//			ft_printf("\n%s(%s):\n", fname, (char *)ar_hdr + 60);
+				fmetadata->subfile = (char*)ar_hdr + 60;
 				regular_files((t_mach_header_64 *)((char *)ar_hdr
-				+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fname, argc);
+				+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
 				ar_hdr = (t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size) + 60);
-				i++;
 			}
 			else
 				break ;
@@ -62,11 +60,16 @@ int		main(int argc, char **argv)
 	int					nb_file;
 	t_stat				buf;
 	t_mach_header_64	*mach_header_64;
+	t_fmetadata			*fmetadata;
 
 	nb_file = 0;
 	while (++nb_file < argc)
 	{
 		fd = open(argv[nb_file], O_RDONLY);
+		fmetadata = (t_fmetadata*)malloc(sizeof(t_fmetadata));
+		fmetadata->fname = ft_strdup(argv[nb_file]);
+		fmetadata->argc = argc;
+		fmetadata->subfile = NULL;
 		if (fstat(fd, &buf) == -1)
 		{
 			print_error(argv[nb_file], ": No such file or directory.");
@@ -86,13 +89,13 @@ int		main(int argc, char **argv)
 		}
 		if (is_magic(mach_header_64->magic))
 		{
-			regular_files(mach_header_64, argv[nb_file], argc);
+			regular_files(mach_header_64, fmetadata);// TODO: free fmetadata.
 			munmap(mach_header_64, buf.st_size);
 			close(fd);
 		}
 		else
 		{
-			if (archive_files(mach_header_64, argv[nb_file], argc))
+			if (archive_files(mach_header_64, fmetadata))
 				munmap(mach_header_64, buf.st_size);
 			else
 			{

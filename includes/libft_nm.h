@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 14:05:58 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 16:17:19 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,13 @@ typedef struct						s_metadata
 	t_nlist_64						*symtab;
 }									t_metadata;
 
+typedef struct						s_fmetadata
+{
+	char							*fname;
+	char							*subfile;
+	int								argc;
+}									t_fmetadata;
+
 t_section_64						*get_section(t_load_command const
 *load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata);
 t_section_64						*get_big_section(t_load_command const
@@ -58,9 +65,9 @@ int									is_32bits(uint32_t magic);
 int									ft_nm(t_mach_header_64 const
 		*mach_header_64, char const *fname, int const argc);
 int									process_fat_header(t_fat_header const
-		*fat_header, char const *fname, int const argc);
+		*fat_header, t_fmetadata *fmetadata);
 int									process_header(t_mach_header_64 const
-		*mach_header_64, uint32_t const magic, char const *file_name, int const argc);
+		*mach_header_64, uint32_t const magic, t_fmetadata *fmetadata);
 void								print_symtab(t_load_command const
 		*load_command, t_mach_header_64 const *mach_header_64,
 		t_metadata const *metadata);

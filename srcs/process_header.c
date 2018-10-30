@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 12:41:42 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/29 16:23:35 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,25 +85,25 @@ t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 	return (mdata);
 }
 
-void	print_cputype(t_mach_header_64 const *mach_header_64,
-		char const *file_name, int pass, int const argc)
+void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata *fmetadata)
 {
-	if (is_fat(mach_header_64->magic) && argc > 2)
+	if (is_fat(mach_header_64->magic) && fmetadata->argc > 2)
 		return ;
-	if (OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC && pass == 2)
-		ft_printf("\n%s (for architecture ppc):\n", file_name);
+	if (fmetadata->subfile)
+		ft_printf("\n%s(%s):\n", fmetadata->fname, fmetadata->subfile);
+	else if (OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC && pass == 2)
+		ft_printf("\n%s (for architecture ppc):\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2)
-		ft_printf("\n%s (for architecture i386):\n", file_name);
+		ft_printf("\n%s (for architecture i386):\n", fmetadata->fname);
 	else if (OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC)
-		ft_printf("%\ns :\n", file_name);
+		ft_printf("%\ns :\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386)
-		ft_printf("%\ns :\n", file_name);
+		ft_printf("%\ns :\n", fmetadata->fname);
 	else
-		(argc > 2) ? ft_printf("\n%s:\n", file_name) : 0;
+		(fmetadata->argc > 2) ? ft_printf("\n%s:\n", fmetadata->fname) : 0;
 }
 
-int		process_header(t_mach_header_64 const *mach_header_64,
-		uint32_t const magic, char const *file_name, int const argc)
+int		process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic, t_fmetadata *fmetadata)
 {
 	static int			pass = 0;
 	t_metadata			*metadata;
@@ -112,13 +112,13 @@ int		process_header(t_mach_header_64 const *mach_header_64,
 	if (is_64bits(magic))
 	{
 		pass = 1;
-		print_cputype(mach_header_64, file_name, pass, argc);
+		print_cputype(mach_header_64, pass, fmetadata);
 		metadata = get_metadata_64(mach_header_64);
 	}
 	else if (is_32bits(magic) && (pass == 0 || pass == 2))
 	{
 		pass = 2;
-		print_cputype(mach_header_64, file_name, pass, argc);
+		print_cputype(mach_header_64, pass, fmetadata);
 		if (mach_header_64->magic == MH_CIGAM)
 			metadata = get_big_metadata_32(mach_header_64);
 		else
