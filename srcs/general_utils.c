@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 09:41:22 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/29 12:55:45 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 17:05:51 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,12 @@ int		is_32bits(uint32_t magic)
 	if (magic == MH_MAGIC || magic == MH_CIGAM)
 		return (1);
 	return (0);
+}
+
+uint32_t	ft_OSSwapInt32(uint32_t x)
+{
+    return ((((((x) & 0xff000000) >> 24) | \
+                (((x) & 0x00ff0000) >>  8) | \
+                (((x) & 0x0000ff00) <<  8) | \
+                (((x) & 0x000000ff) << 24))));
 }

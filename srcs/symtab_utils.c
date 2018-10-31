@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 12:46:15 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 17:05:33 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,15 +118,15 @@ void		print_big_symtab(t_load_command const *load_command,
 
 	i = -1;
 	stable = (char *)((char *)mach_header_64
-			+ OSSwapInt32(((t_symtab_command*)load_command)->stroff));
-	while (++i < OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
+			+ ft_OSSwapInt32(((t_symtab_command*)load_command)->stroff));
+	while (++i < ft_OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
 	{
 		if (is_64bits(mach_header_64->magic))
-			get_symbol_64(OSSwapInt32(mdata->symtab[i].n_value), (char *)stable
-					+ OSSwapInt32(mdata->symtab[i].n_un.n_strx), mdata, i);
+			get_symbol_64(ft_OSSwapInt32(mdata->symtab[i].n_value), (char *)stable
+					+ ft_OSSwapInt32(mdata->symtab[i].n_un.n_strx), mdata, i);
 		else
-			get_symbol(OSSwapInt32((mdata->symtab)[i].n_value), (char*)stable
-					+ OSSwapInt32((mdata->symtab)[i].n_un.n_strx), mdata, i);
+			get_symbol(ft_OSSwapInt32((mdata->symtab)[i].n_value), (char*)stable
+					+ ft_OSSwapInt32((mdata->symtab)[i].n_un.n_strx), mdata, i);
 	}
 }
 
@@ -139,10 +139,10 @@ t_nlist_64		*get_big_symtab(t_load_command const *load_command,
 
 	i = -1;
 	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
-			+ OSSwapInt32(((t_symtab_command*)load_command)->symoff));
-	symtab = ft_memalloc(OSSwapInt32(((t_symtab_command*)load_command)->nsyms)
+			+ ft_OSSwapInt32(((t_symtab_command*)load_command)->symoff));
+	symtab = ft_memalloc(ft_OSSwapInt32(((t_symtab_command*)load_command)->nsyms)
 			* sizeof(t_nlist_64));
-	while (++i < OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
+	while (++i < ft_OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
 	{
 		symtab[i] = *nlist_64;
 		if (is_64bits(mach_header_64->magic))

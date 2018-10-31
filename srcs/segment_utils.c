@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 09:35:24 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 17:07:47 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64,
 	old_size = mdata->nsect;
 	if (mach_header_64->magic == MH_CIGAM)
 	{
-		mdata->nsect += OSSwapInt32(sc->nsects);
+		mdata->nsect += ft_OSSwapInt32(sc->nsects);
 		sectab = (sectab == NULL)
-		? ft_memalloc(OSSwapInt32(sc->nsects) * sizeof(t_section_64))
+		? ft_memalloc(ft_OSSwapInt32(sc->nsects) * sizeof(t_section_64))
 		: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), old_size);
 	}
 	else
@@ -62,20 +62,17 @@ t_section_64	*get_sectab(t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata *metadata)
 {
 	static t_section_64		*sectab = NULL;
-//	t_section_64			*section;
 	t_segment_command_64	*sc_64;
 	t_segment_command		*sc;
 
 	if (is_64bits(mach_header_64->magic))
 	{
 		sc_64 = (t_segment_command_64*)(load_command);
-		//section = (t_section_64*)(sc_64 + 1);
 		sectab = alloc_sectab_64(sectab, metadata, sc_64);
 	}
 	else
 	{
 		sc = (t_segment_command*)load_command;
-		//section = (t_section_64*)(sc + 1);
 		sectab = alloc_sectab(mach_header_64, sectab, metadata, sc);
 	}
 	return (sectab);

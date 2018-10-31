@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 14:58:59 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 17:07:15 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,7 @@ int									archive_files(t_mach_header_64 const
 		*mach_header_64, t_fmetadata *fmetadata);
 void	print_cputype(t_mach_header_64 const *mach_header_64,
 		int pass, t_fmetadata *fmetadata);
+
+uint32_t							ft_OSSwapInt32(uint32_t x);
 
 #endif
