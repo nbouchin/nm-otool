@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 16:03:58 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 14:21:38 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int		regular_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
 {
-
 	if (is_fat(mach_header_64->magic))
 		process_fat_header((t_fat_header*)mach_header_64, fmetadata);
 	else
@@ -35,7 +34,7 @@ int		archive_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadat
 			{
 				fmetadata->subfile = (char*)ar_hdr + 60;
 				regular_files((t_mach_header_64 *)((char *)ar_hdr
-				+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
+							+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
 				ar_hdr = (t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size) + 60);
 			}
 			else

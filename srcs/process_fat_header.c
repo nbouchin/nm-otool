@@ -6,13 +6,35 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 16:24:04 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 16:53:20 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		process_fat_header(t_fat_header const *fat_header, t_fmetadata *fmetadata)
+int		find_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
+{
+	uint32_t			i;
+	int					ret;
+	t_fat_arch			*fat_arch;
+	t_mach_header_64	*mach_header_64;
+
+	i = -1;
+	ret = 0;
+	fmetadata->to_print = 0;
+	fat_arch = (t_fat_arch*)(fat_header + 1);
+	while (++i < OSSwapInt32(fat_header->nfat_arch))
+	{
+		mach_header_64 = (t_mach_header_64*)((char *)fat_header
+				+ OSSwapInt32(fat_arch->offset));
+		if (is_64bits(mach_header_64->magic))
+			ret = 1;
+		fat_arch++;
+	}
+	return (ret);
+}
+
+int		fat_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 {
 	uint32_t			i;
 	t_fat_arch			*fat_arch;
@@ -25,15 +47,56 @@ int		process_fat_header(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 	{
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header
 				+ OSSwapInt32(fat_arch->offset));
-		if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
+		if (is_64bits(mach_header_64->magic))
 		{
-			archive_files(mach_header_64, fmetadata);
-			return (1);// TODO : print only computer architecture.
-		}
-		else
+			if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
+			{
+				archive_files(mach_header_64, fmetadata);
+				return (1);
+			}
 			process_header(mach_header_64,
 					OSSwapInt32(mach_header_64->magic), fmetadata);
+			return (1);
+		}
 		fat_arch++;
 	}
 	return (1);
+}
+
+int		dont_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
+{
+	uint32_t			i;
+	t_fat_arch			*fat_arch;
+	t_mach_header_64	*mach_header_64;
+
+	i = -1;
+	fmetadata->to_print = 0;
+	fat_arch = (t_fat_arch*)(fat_header + 1);
+	while (++i < OSSwapInt32(fat_header->nfat_arch))
+	{
+		mach_header_64 = (t_mach_header_64*)((char *)fat_header
+				+ OSSwapInt32(fat_arch->offset));
+		fmetadata->to_print = 1;
+		fmetadata->argc += 1;
+		if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
+		{
+			archive_files(mach_header_64, fmetadata);
+			return (1);
+		}
+		process_header(mach_header_64,
+				OSSwapInt32(mach_header_64->magic), fmetadata);
+		fat_arch++;
+	}
+	return (1);
+}
+
+int		process_fat_header(t_fat_header const *fat_header, t_fmetadata *fmetadata)
+{
+	int					have_64;
+
+	fmetadata->to_print = 0;
+	have_64 = find_64(fat_header, fmetadata);
+	if (have_64)
+		return (fat_have_64(fat_header, fmetadata));
+	return (dont_have_64(fat_header, fmetadata));
 }

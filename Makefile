@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/10/26 11:10:38 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/31 13:41:01 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,8 +29,6 @@ SRCS	= $(addprefix $(SRCDIR), $(SRC))
 OBJS	= $(addprefix $(OBJDIR), $(SRC:.c=.o))
 
 all: $(OBJDIR) $(NAME)
-
-INDEX = 0
 
 $(NAME): $(OBJS)
 	make -C srcs/libft

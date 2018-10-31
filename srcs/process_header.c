@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 16:59:11 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 15:05:15 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,14 +94,14 @@ void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata
 	}
 	if (fmetadata->to_print == 0 || fmetadata->argc <= 2)
 		return ;
-	else if (OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC && pass == 2)
+	if (OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC && pass == 2)
 		ft_printf("\n%s (for architecture ppc):\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2)
 		ft_printf("\n%s (for architecture i386):\n", fmetadata->fname);
 	else if (OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC)
-		ft_printf("%\ns :\n", fmetadata->fname);
+		ft_printf("%s:\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386)
-		ft_printf("%\ns :\n", fmetadata->fname);
+		ft_printf("%s:\n", fmetadata->fname);
 	else
 		(fmetadata->argc > 2) ? ft_printf("\n%s:\n", fmetadata->fname) : 0;
 }
@@ -112,13 +112,18 @@ int		process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic
 	t_metadata			*metadata;
 
 	metadata = NULL;
+	if (fmetadata->new_file == 1)
+	{
+		pass = 0;
+		fmetadata->new_file = 0;
+	}
 	if (is_64bits(magic))
 	{
 		pass = 1;
 		print_cputype(mach_header_64, pass, fmetadata);
 		metadata = get_metadata_64(mach_header_64);
 	}
-	else if ((is_32bits(magic) && (pass == 0 || pass == 2)))// || fmetadata->new_file == 1
+	else if ((is_32bits(magic) && (pass == 0 || pass == 2)))
 	{
 		pass = 2;
 		print_cputype(mach_header_64, pass, fmetadata);
@@ -127,8 +132,6 @@ int		process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic
 		else
 			metadata = get_metadata_32(mach_header_64);
 	}
-//	if (fmetadata->new_file)
-//		fmetadata->new_file = 0;
 	free(metadata);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/30 12:45:59 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/31 09:35:24 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,20 @@ t_section_64	*get_sectab(t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata *metadata)
 {
 	static t_section_64		*sectab = NULL;
-	t_section_64			*section;
+//	t_section_64			*section;
 	t_segment_command_64	*sc_64;
 	t_segment_command		*sc;
 
 	if (is_64bits(mach_header_64->magic))
 	{
 		sc_64 = (t_segment_command_64*)(load_command);
-		section = (t_section_64*)(sc_64 + 1);
+		//section = (t_section_64*)(sc_64 + 1);
 		sectab = alloc_sectab_64(sectab, metadata, sc_64);
 	}
 	else
 	{
 		sc = (t_segment_command*)load_command;
-		section = (t_section_64*)(sc + 1);
+		//section = (t_section_64*)(sc + 1);
 		sectab = alloc_sectab(mach_header_64, sectab, metadata, sc);
 	}
 	return (sectab);
@@ -111,7 +111,7 @@ t_section_64	*get_section(t_load_command const *load_command,
 	i = metadata->nsect;
 	sectab = get_sectab(load_command, mach_header_64, metadata);
 	section = get_current_section(load_command, mach_header_64);
-	while (i < (int)metadata->nsect)
+	while (i < metadata->nsect)
 	{
 		sectab[i] = *section;
 		if (is_64bits(mach_header_64->magic))
