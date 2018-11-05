@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 10:41:12 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 13:19:50 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int		archive_files(t_mach_header_64 const *mach_header_64,
 				regular_files((t_mach_header_64 *)((char *)ar_hdr
 				+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
 				ar_hdr = (t_ar_hdr*)((char *)ar_hdr
-						+ ft_atoi(ar_hdr->ar_size) + 60);
+				+ ft_atoi(ar_hdr->ar_size) + 60);
 			}
 			else
 				break ;
@@ -58,6 +58,12 @@ void	init_file_metadata(t_fmetadata *fmetadata, int argc,
 	fmetadata->to_print = 1;
 }
 
+void	delete_file_metadata(t_fmetadata *fmetadata)
+{
+	free(fmetadata->fname);
+	free(fmetadata);
+}
+
 void	print_error(char const *file_name, char const *error)
 {
 	ft_putstr_fd("nm: ", 2);
@@ -66,28 +72,17 @@ void	print_error(char const *file_name, char const *error)
 }
 
 void	run_archive_files(t_mach_header_64 *mach_header_64,
-		t_fmetadata *fmetadata, t_stat buf)
+		t_fmetadata *fmetadata)
 {
-	if (archive_files(mach_header_64, fmetadata))
-	{
-		free(fmetadata);
-		munmap(mach_header_64, buf.st_size);
-	}
-	else
-	{
-		munmap(mach_header_64, buf.st_size);
+	if (!archive_files(mach_header_64, fmetadata))
 		print_error(fmetadata->fname,
 				" The file was not recognized as a valide object file\n");
-	}
 }
 
 void	run_regular_files(t_mach_header_64 *mach_header_64,
-		t_fmetadata *fmetadata, t_stat buf, int fd)
+		t_fmetadata *fmetadata)
 {
 	regular_files(mach_header_64, fmetadata);
-	free(fmetadata);
-	munmap(mach_header_64, buf.st_size);
-	close(fd);
 }
 
 void	file_error(int fd, t_stat buf, t_fmetadata *fmetadata)
@@ -96,20 +91,29 @@ void	file_error(int fd, t_stat buf, t_fmetadata *fmetadata)
 		print_error(fmetadata->fname, ": No such file or directory.");
 	else if (S_ISDIR(buf.st_mode))
 		print_error(fmetadata->fname, ": is a directory.");
+	delete_file_metadata(fmetadata);
+}
+
+void	delete_data(t_mach_header_64 *mach_header_64,
+		t_fmetadata *fmetadata, t_stat buf, int fd)
+{
+	delete_file_metadata(fmetadata);
+	munmap(mach_header_64, buf.st_size);
+	close(fd);
 }
 
 void	run_nm(t_mach_header_64 *mach_header_64, t_fmetadata *fmetadata,
 		t_stat buf, int fd)
 {
 	if (is_magic(mach_header_64->magic))
-		run_regular_files(mach_header_64, fmetadata, buf, fd);
+		run_regular_files(mach_header_64, fmetadata);
 	else
-		run_archive_files(mach_header_64, fmetadata, buf);
+		run_archive_files(mach_header_64, fmetadata);
+	delete_data(mach_header_64, fmetadata, buf, fd);
 }
 
 int		main(int argc, char **argv)
 {
-	int					fd;
 	int					nb_file;
 	t_stat				buf;
 	t_mach_header_64	*mach_header_64;
@@ -118,21 +122,21 @@ int		main(int argc, char **argv)
 	nb_file = 0;
 	while (++nb_file < argc)
 	{
-		fd = open(argv[nb_file], O_RDONLY);
 		fmetadata = (t_fmetadata*)ft_memalloc(sizeof(t_fmetadata));
+		fmetadata->fd = open(argv[nb_file], O_RDONLY);
 		init_file_metadata(fmetadata, argc, argv, nb_file);
-		if (fstat(fd, &buf) == -1 || S_ISDIR(buf.st_mode))
+		if (fstat(fmetadata->fd, &buf) == -1 || S_ISDIR(buf.st_mode))
 		{
-			file_error(fd, buf, fmetadata);
+			file_error(fmetadata->fd, buf, fmetadata);
 			continue ;
 		}
-		mach_header_64 = mmap(NULL, buf.st_size, PROT_WRITE
-				| PROT_READ, MAP_PRIVATE, fd, 0);
+		mach_header_64 = mmap(NULL, buf.st_size,
+		PROT_WRITE | PROT_READ, MAP_PRIVATE, fmetadata->fd, 0);
 		if (mach_header_64 == MAP_FAILED)
 		{
-			munmap(mach_header_64, buf.st_size);
+			delete_data(mach_header_64, fmetadata, buf, fmetadata->fd);
 			continue ;
 		}
-		run_nm(mach_header_64, fmetadata, buf, fd);
+		run_nm(mach_header_64, fmetadata, buf, fmetadata->fd);
 	}
 }

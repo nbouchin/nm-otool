@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 11:03:13 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 11:22:50 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-t_metadata	*get_metadata_64(t_mach_header_64 const *mach_header_64)
+void	get_metadata_64(t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			ncmds;
 	t_load_command		*lcommand;
@@ -33,10 +33,10 @@ t_metadata	*get_metadata_64(t_mach_header_64 const *mach_header_64)
 		}
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);
 	}
-	return (mdata);
+	free(mdata);
 }
 
-t_metadata	*get_big_metadata_32(t_mach_header_64 const *mach_header_64)
+void	get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			ncmds;
 	t_load_command		*lcommand;
@@ -58,10 +58,10 @@ t_metadata	*get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 		lcommand = (t_load_command*)((char*)lcommand
 				+ ft_swap_int32(lcommand->cmdsize));
 	}
-	return (metadata);
+	free(metadata);
 }
 
-t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
+void	get_metadata_32(t_mach_header_64 const *mach_header_64)
 {
 	uint32_t			ncmds;
 	t_load_command		*lcommand;
@@ -82,10 +82,10 @@ t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 		}
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);
 	}
-	return (mdata);
+	free(mdata);
 }
 
-void		print_cputype(t_mach_header_64 const *mach_header_64, int pass,
+void	print_cputype(t_mach_header_64 const *mach_header_64, int pass,
 		t_fmetadata *fmetadata)
 {
 	if (fmetadata->subfile)
@@ -108,13 +108,11 @@ void		print_cputype(t_mach_header_64 const *mach_header_64, int pass,
 		(fmetadata->argc > 2) ? ft_printf("\n%s:\n", fmetadata->fname) : 0;
 }
 
-int			process_header(t_mach_header_64 const *mach_header_64,
+int		process_header(t_mach_header_64 const *mach_header_64,
 		uint32_t const magic, t_fmetadata *fmetadata)
 {
 	static int			pass = 0;
-	t_metadata			*metadata;
 
-	metadata = NULL;
 	if (fmetadata->new_file == 1)
 	{
 		pass = 0;
@@ -124,17 +122,16 @@ int			process_header(t_mach_header_64 const *mach_header_64,
 	{
 		pass = 1;
 		print_cputype(mach_header_64, pass, fmetadata);
-		metadata = get_metadata_64(mach_header_64);
+		get_metadata_64(mach_header_64);
 	}
 	else if ((is_32bits(magic) && (pass == 0 || pass == 2)))
 	{
 		pass = 2;
 		print_cputype(mach_header_64, pass, fmetadata);
 		if (mach_header_64->magic == MH_CIGAM)
-			metadata = get_big_metadata_32(mach_header_64);
+			get_big_metadata_32(mach_header_64);
 		else
-			metadata = get_metadata_32(mach_header_64);
+			get_metadata_32(mach_header_64);
 	}
-	free(metadata);
 	return (1);
 }

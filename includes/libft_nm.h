@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 09:26:18 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 13:18:35 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct						s_metadata
 
 typedef struct						s_fmetadata
 {
+	int								fd;
 	int								new_file;
 	char							*fname;
 	char							*subfile;
