@@ -6,13 +6,14 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 14:21:38 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 10:41:12 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		regular_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
+int		regular_files(t_mach_header_64 const *mach_header_64,
+		t_fmetadata *fmetadata)
 {
 	if (is_fat(mach_header_64->magic))
 		process_fat_header((t_fat_header*)mach_header_64, fmetadata);
@@ -21,7 +22,8 @@ int		regular_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadat
 	return (1);
 }
 
-int		archive_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
+int		archive_files(t_mach_header_64 const *mach_header_64,
+		t_fmetadata *fmetadata)
 {
 	t_ar_hdr			*ar_hdr;
 
@@ -34,8 +36,9 @@ int		archive_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadat
 			{
 				fmetadata->subfile = (char*)ar_hdr + 60;
 				regular_files((t_mach_header_64 *)((char *)ar_hdr
-							+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
-				ar_hdr = (t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size) + 60);
+				+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
+				ar_hdr = (t_ar_hdr*)((char *)ar_hdr
+						+ ft_atoi(ar_hdr->ar_size) + 60);
 			}
 			else
 				break ;
@@ -45,11 +48,63 @@ int		archive_files(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadat
 	return (0);
 }
 
+void	init_file_metadata(t_fmetadata *fmetadata, int argc,
+		char **argv, int nb_file)
+{
+	fmetadata->new_file = 1;
+	fmetadata->fname = ft_strdup(argv[nb_file]);
+	fmetadata->argc = argc;
+	fmetadata->subfile = NULL;
+	fmetadata->to_print = 1;
+}
+
 void	print_error(char const *file_name, char const *error)
 {
 	ft_putstr_fd("nm: ", 2);
 	ft_putstr_fd(file_name, 2);
 	ft_putendl_fd(error, 2);
+}
+
+void	run_archive_files(t_mach_header_64 *mach_header_64,
+		t_fmetadata *fmetadata, t_stat buf)
+{
+	if (archive_files(mach_header_64, fmetadata))
+	{
+		free(fmetadata);
+		munmap(mach_header_64, buf.st_size);
+	}
+	else
+	{
+		munmap(mach_header_64, buf.st_size);
+		print_error(fmetadata->fname,
+				" The file was not recognized as a valide object file\n");
+	}
+}
+
+void	run_regular_files(t_mach_header_64 *mach_header_64,
+		t_fmetadata *fmetadata, t_stat buf, int fd)
+{
+	regular_files(mach_header_64, fmetadata);
+	free(fmetadata);
+	munmap(mach_header_64, buf.st_size);
+	close(fd);
+}
+
+void	file_error(int fd, t_stat buf, t_fmetadata *fmetadata)
+{
+	if (fstat(fd, &buf) == -1)
+		print_error(fmetadata->fname, ": No such file or directory.");
+	else if (S_ISDIR(buf.st_mode))
+		print_error(fmetadata->fname, ": is a directory.");
+}
+
+void	run_nm(t_mach_header_64 *mach_header_64, t_fmetadata *fmetadata,
+		t_stat buf, int fd)
+{
+	if (is_magic(mach_header_64->magic))
+		run_regular_files(mach_header_64, fmetadata, buf, fd);
+	else
+		run_archive_files(mach_header_64, fmetadata, buf);
 }
 
 int		main(int argc, char **argv)
@@ -65,19 +120,10 @@ int		main(int argc, char **argv)
 	{
 		fd = open(argv[nb_file], O_RDONLY);
 		fmetadata = (t_fmetadata*)ft_memalloc(sizeof(t_fmetadata));
-		fmetadata->new_file = 1;
-		fmetadata->fname = ft_strdup(argv[nb_file]);
-		fmetadata->argc = argc;
-		fmetadata->subfile = NULL;
-		fmetadata->to_print = 1;
-		if (fstat(fd, &buf) == -1)
+		init_file_metadata(fmetadata, argc, argv, nb_file);
+		if (fstat(fd, &buf) == -1 || S_ISDIR(buf.st_mode))
 		{
-			print_error(argv[nb_file], ": No such file or directory.");
-			continue ;
-		}
-		if (S_ISDIR(buf.st_mode))
-		{
-			print_error(argv[nb_file], ": is a directory.");
+			file_error(fd, buf, fmetadata);
 			continue ;
 		}
 		mach_header_64 = mmap(NULL, buf.st_size, PROT_WRITE
@@ -87,25 +133,6 @@ int		main(int argc, char **argv)
 			munmap(mach_header_64, buf.st_size);
 			continue ;
 		}
-		if (is_magic(mach_header_64->magic))
-		{
-			regular_files(mach_header_64, fmetadata);
-			free(fmetadata);
-			munmap(mach_header_64, buf.st_size);
-			close(fd);
-		}
-		else
-		{
-			if (archive_files(mach_header_64, fmetadata))
-			{
-				free(fmetadata);
-				munmap(mach_header_64, buf.st_size);
-			}
-			else
-			{
-				munmap(mach_header_64, buf.st_size);
-				print_error(argv[nb_file], " The file was not recognized as a valide object file\n");
-			}
-		}
+		run_nm(mach_header_64, fmetadata, buf, fd);
 	}
 }

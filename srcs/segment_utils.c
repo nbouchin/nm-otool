@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 17:07:47 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 09:26:18 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata,
 
 	old_size = metadata->nsect;
 	metadata->nsect += sc_64->nsects;
-	sectab = (sectab == NULL) ? ft_memalloc(sc_64->nsects * sizeof(t_section_64))
+	sectab = (sectab == NULL)
+	? ft_memalloc(sc_64->nsects * sizeof(t_section_64))
 	: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), old_size);
 	return (sectab);
 }
@@ -43,9 +44,9 @@ t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64,
 	old_size = mdata->nsect;
 	if (mach_header_64->magic == MH_CIGAM)
 	{
-		mdata->nsect += ft_OSSwapInt32(sc->nsects);
+		mdata->nsect += ft_swap_int32(sc->nsects);
 		sectab = (sectab == NULL)
-		? ft_memalloc(ft_OSSwapInt32(sc->nsects) * sizeof(t_section_64))
+		? ft_memalloc(ft_swap_int32(sc->nsects) * sizeof(t_section_64))
 		: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), old_size);
 	}
 	else

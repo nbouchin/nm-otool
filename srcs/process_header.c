@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 17:05:32 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 09:26:17 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,21 @@ t_metadata	*get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 	t_load_command		*lcommand;
 	t_metadata			*metadata;
 
-	ncmds = ft_OSSwapInt32(mach_header_64->ncmds);
+	ncmds = ft_swap_int32(mach_header_64->ncmds);
 	metadata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
 	lcommand = (t_load_command*)((t_mach_header*)mach_header_64 + 1);
 	while (--ncmds)
 	{
-		if (ft_OSSwapInt32(lcommand->cmd) == LC_SEGMENT)
+		if (ft_swap_int32(lcommand->cmd) == LC_SEGMENT)
 			metadata->sectab = get_section(lcommand, mach_header_64, metadata);
-		else if (ft_OSSwapInt32(lcommand->cmd) == LC_SYMTAB)
+		else if (ft_swap_int32(lcommand->cmd) == LC_SYMTAB)
 		{
 			metadata->symtab = get_big_symtab(lcommand, mach_header_64);
 			print_big_symtab(lcommand, mach_header_64, metadata);
 			(metadata->symtab) ? free(metadata->symtab) : 0;
 		}
 		lcommand = (t_load_command*)((char*)lcommand
-				+ ft_OSSwapInt32(lcommand->cmdsize));
+				+ ft_swap_int32(lcommand->cmdsize));
 	}
 	return (metadata);
 }
@@ -85,7 +85,8 @@ t_metadata	*get_metadata_32(t_mach_header_64 const *mach_header_64)
 	return (mdata);
 }
 
-void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata *fmetadata)
+void		print_cputype(t_mach_header_64 const *mach_header_64, int pass,
+		t_fmetadata *fmetadata)
 {
 	if (fmetadata->subfile)
 	{
@@ -94,11 +95,12 @@ void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata
 	}
 	if (fmetadata->to_print == 0 || fmetadata->argc <= 2)
 		return ;
-	if (ft_OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC && pass == 2)
+	if (ft_swap_int32(mach_header_64->cputype)
+			== CPU_TYPE_POWERPC && pass == 2)
 		ft_printf("\n%s (for architecture ppc):\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2)
 		ft_printf("\n%s (for architecture i386):\n", fmetadata->fname);
-	else if (ft_OSSwapInt32(mach_header_64->cputype) == CPU_TYPE_POWERPC)
+	else if (ft_swap_int32(mach_header_64->cputype) == CPU_TYPE_POWERPC)
 		ft_printf("%s:\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386)
 		ft_printf("%s:\n", fmetadata->fname);
@@ -106,7 +108,8 @@ void	print_cputype(t_mach_header_64 const *mach_header_64, int pass, t_fmetadata
 		(fmetadata->argc > 2) ? ft_printf("\n%s:\n", fmetadata->fname) : 0;
 }
 
-int		process_header(t_mach_header_64 const *mach_header_64, uint32_t const magic, t_fmetadata *fmetadata)
+int			process_header(t_mach_header_64 const *mach_header_64,
+		uint32_t const magic, t_fmetadata *fmetadata)
 {
 	static int			pass = 0;
 	t_metadata			*metadata;

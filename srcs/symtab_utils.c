@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 17:05:33 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 10:55:05 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-void		print_symbol(uint64_t const n_value, char const letter,
+void			print_symbol(uint64_t const n_value, char const letter,
 		char const *symname, int const arch_type)
 {
 	if (arch_type == 64)
@@ -25,7 +25,7 @@ void		print_symbol(uint64_t const n_value, char const letter,
 			: ft_printf("%08llx %c %s\n", (uint32_t)n_value, letter, symname);
 }
 
-char		get_type_char(t_metadata const *mdata, int const i)
+char			get_type_char(t_metadata const *mdata, int const i)
 {
 	char	to_ret;
 
@@ -39,13 +39,10 @@ char		get_type_char(t_metadata const *mdata, int const i)
 	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
 				SECT_BSS))
 		to_ret = 'b';
-	//	else if (!ft_strcmp(mdata->sectab[mdata->symtab[i].n_sect - 1].sectname,
-	//				SECT_COMMON))
-	//		to_ret = 'c';
 	return (to_ret);
 }
 
-void		get_symbol_64(uint64_t const n_value, char const *symbol_name,
+void			get_symbol_64(uint64_t const n_value, char const *symbol_name,
 		t_metadata const *metadata, int const i)
 {
 	char	letter;
@@ -54,7 +51,12 @@ void		get_symbol_64(uint64_t const n_value, char const *symbol_name,
 	if ((metadata->symtab[i].n_type & N_STAB))
 		letter = 0;
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_UNDF)
-		letter = 'u';
+	{
+		if (n_value && (metadata->symtab[i].n_type & N_EXT))
+			letter = 'c';
+		else
+			letter = 'u';
+	}
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_ABS)
 		letter = 'a';
 	else if ((metadata->symtab[i].n_type & N_TYPE) == N_SECT)
@@ -67,7 +69,7 @@ void		get_symbol_64(uint64_t const n_value, char const *symbol_name,
 		print_symbol(n_value, letter, symbol_name, 64);
 }
 
-void		get_symbol(uint64_t const n_value, char const *symbol_name,
+void			get_symbol(uint64_t const n_value, char const *symbol_name,
 		t_metadata const *metadata, int const i)
 {
 	char	letter;
@@ -89,7 +91,7 @@ void		get_symbol(uint64_t const n_value, char const *symbol_name,
 		print_symbol(n_value, letter, symbol_name, 32);
 }
 
-void		print_symtab(t_load_command const *load_command,
+void			print_symtab(t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata const *metadata)
 {
 	uint32_t		i;
@@ -109,8 +111,7 @@ void		print_symtab(t_load_command const *load_command,
 	}
 }
 
-
-void		print_big_symtab(t_load_command const *load_command,
+void			print_big_symtab(t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata const *mdata)
 {
 	uint32_t		i;
@@ -118,15 +119,16 @@ void		print_big_symtab(t_load_command const *load_command,
 
 	i = -1;
 	stable = (char *)((char *)mach_header_64
-			+ ft_OSSwapInt32(((t_symtab_command*)load_command)->stroff));
-	while (++i < ft_OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
+			+ ft_swap_int32(((t_symtab_command*)load_command)->stroff));
+	while (++i < ft_swap_int32(((t_symtab_command*)load_command)->nsyms))
 	{
 		if (is_64bits(mach_header_64->magic))
-			get_symbol_64(ft_OSSwapInt32(mdata->symtab[i].n_value), (char *)stable
-					+ ft_OSSwapInt32(mdata->symtab[i].n_un.n_strx), mdata, i);
+			get_symbol_64(ft_swap_int32(mdata->symtab[i].n_value),
+			(char *)stable + ft_swap_int32(mdata->symtab[i].n_un.n_strx),
+			mdata, i);
 		else
-			get_symbol(ft_OSSwapInt32((mdata->symtab)[i].n_value), (char*)stable
-					+ ft_OSSwapInt32((mdata->symtab)[i].n_un.n_strx), mdata, i);
+			get_symbol(ft_swap_int32((mdata->symtab)[i].n_value), (char*)stable
+					+ ft_swap_int32((mdata->symtab)[i].n_un.n_strx), mdata, i);
 	}
 }
 
@@ -139,10 +141,10 @@ t_nlist_64		*get_big_symtab(t_load_command const *load_command,
 
 	i = -1;
 	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
-			+ ft_OSSwapInt32(((t_symtab_command*)load_command)->symoff));
-	symtab = ft_memalloc(ft_OSSwapInt32(((t_symtab_command*)load_command)->nsyms)
+			+ ft_swap_int32(((t_symtab_command*)load_command)->symoff));
+	symtab = ft_memalloc(ft_swap_int32(((t_symtab_command*)load_command)->nsyms)
 			* sizeof(t_nlist_64));
-	while (++i < ft_OSSwapInt32(((t_symtab_command*)load_command)->nsyms))
+	while (++i < ft_swap_int32(((t_symtab_command*)load_command)->nsyms))
 	{
 		symtab[i] = *nlist_64;
 		if (is_64bits(mach_header_64->magic))

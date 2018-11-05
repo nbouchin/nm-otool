@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 09:41:22 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 17:05:51 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 10:41:46 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-int		is_magic(uint32_t magic)
+int			is_magic(uint32_t magic)
 {
 	if (magic != MH_MAGIC
 			&& magic != MH_CIGAM
@@ -27,14 +27,14 @@ int		is_magic(uint32_t magic)
 		return (1);
 }
 
-int		is_fat(uint32_t magic)
+int			is_fat(uint32_t magic)
 {
 	if (magic == FAT_MAGIC || magic == FAT_CIGAM)
 		return (1);
 	return (0);
 }
 
-int		is_mach(uint32_t magic)
+int			is_mach(uint32_t magic)
 {
 	if (magic == MH_MAGIC || magic == MH_CIGAM
 			|| magic == MH_MAGIC_64 || magic == MH_CIGAM_64)
@@ -42,24 +42,24 @@ int		is_mach(uint32_t magic)
 	return (0);
 }
 
-int		is_64bits(uint32_t magic)
+int			is_64bits(uint32_t magic)
 {
 	if (magic == MH_MAGIC_64 || magic == MH_CIGAM_64)
 		return (1);
 	return (0);
 }
 
-int		is_32bits(uint32_t magic)
+int			is_32bits(uint32_t magic)
 {
 	if (magic == MH_MAGIC || magic == MH_CIGAM)
 		return (1);
 	return (0);
 }
 
-uint32_t	ft_OSSwapInt32(uint32_t x)
+uint32_t	ft_swap_int32(uint32_t x)
 {
-    return ((((((x) & 0xff000000) >> 24) | \
-                (((x) & 0x00ff0000) >>  8) | \
-                (((x) & 0x0000ff00) <<  8) | \
-                (((x) & 0x000000ff) << 24))));
+	return ((((((x) & 0xff000000) >> 24) |
+					(((x) & 0x00ff0000) >> 8) |
+					(((x) & 0x0000ff00) << 8) |
+					(((x) & 0x000000ff) << 24))));
 }

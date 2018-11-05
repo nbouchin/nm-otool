@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/10/31 17:05:32 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 09:26:17 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ int		find_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 	ret = 0;
 	fmetadata->to_print = 0;
 	fat_arch = (t_fat_arch*)(fat_header + 1);
-	while (++i < ft_OSSwapInt32(fat_header->nfat_arch))
+	while (++i < ft_swap_int32(fat_header->nfat_arch))
 	{
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header
-				+ ft_OSSwapInt32(fat_arch->offset));
+				+ ft_swap_int32(fat_arch->offset));
 		if (is_64bits(mach_header_64->magic))
 			ret = 1;
 		fat_arch++;
@@ -43,10 +43,10 @@ int		fat_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 	i = -1;
 	fmetadata->to_print = 0;
 	fat_arch = (t_fat_arch*)(fat_header + 1);
-	while (++i < ft_OSSwapInt32(fat_header->nfat_arch))
+	while (++i < ft_swap_int32(fat_header->nfat_arch))
 	{
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header
-				+ ft_OSSwapInt32(fat_arch->offset));
+				+ ft_swap_int32(fat_arch->offset));
 		if (is_64bits(mach_header_64->magic))
 		{
 			if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
@@ -55,7 +55,7 @@ int		fat_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 				return (1);
 			}
 			process_header(mach_header_64,
-					ft_OSSwapInt32(mach_header_64->magic), fmetadata);
+					ft_swap_int32(mach_header_64->magic), fmetadata);
 			return (1);
 		}
 		fat_arch++;
@@ -72,10 +72,10 @@ int		dont_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 	i = -1;
 	fmetadata->to_print = 0;
 	fat_arch = (t_fat_arch*)(fat_header + 1);
-	while (++i < ft_OSSwapInt32(fat_header->nfat_arch))
+	while (++i < ft_swap_int32(fat_header->nfat_arch))
 	{
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header
-				+ ft_OSSwapInt32(fat_arch->offset));
+				+ ft_swap_int32(fat_arch->offset));
 		fmetadata->to_print = 1;
 		fmetadata->argc += 1;
 		if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
@@ -84,13 +84,14 @@ int		dont_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 			return (1);
 		}
 		process_header(mach_header_64,
-				ft_OSSwapInt32(mach_header_64->magic), fmetadata);
+				ft_swap_int32(mach_header_64->magic), fmetadata);
 		fat_arch++;
 	}
 	return (1);
 }
 
-int		process_fat_header(t_fat_header const *fat_header, t_fmetadata *fmetadata)
+int		process_fat_header(t_fat_header const *fat_header,
+		t_fmetadata *fmetadata)
 {
 	int					have_64;
 
