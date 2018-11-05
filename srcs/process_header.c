@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 11:22:50 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 16:03:59 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,13 +118,14 @@ int		process_header(t_mach_header_64 const *mach_header_64,
 		pass = 0;
 		fmetadata->new_file = 0;
 	}
+	(void)magic;
 	if (is_64bits(magic))
 	{
 		pass = 1;
 		print_cputype(mach_header_64, pass, fmetadata);
 		get_metadata_64(mach_header_64);
 	}
-	else if ((is_32bits(magic) && (pass == 0 || pass == 2)))
+	if ((is_32bits(magic) && (pass == 0 || pass == 2)))
 	{
 		pass = 2;
 		print_cputype(mach_header_64, pass, fmetadata);

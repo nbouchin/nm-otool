@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 13:19:50 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 18:09:54 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@ int		regular_files(t_mach_header_64 const *mach_header_64,
 int		archive_files(t_mach_header_64 const *mach_header_64,
 		t_fmetadata *fmetadata)
 {
+	int					pass;
 	t_ar_hdr			*ar_hdr;
 
+	pass = 0;
 	if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
 	{
 		ar_hdr = (t_ar_hdr*)((char *)mach_header_64 + 8);
@@ -34,11 +36,17 @@ int		archive_files(t_mach_header_64 const *mach_header_64,
 		{
 			if (!ft_strncmp(ar_hdr->ar_fmag, ARFMAG, 2))
 			{
-				fmetadata->subfile = (char*)ar_hdr + 60;
-				regular_files((t_mach_header_64 *)((char *)ar_hdr
-				+ 60 + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
-				ar_hdr = (t_ar_hdr*)((char *)ar_hdr
-				+ ft_atoi(ar_hdr->ar_size) + 60);
+				fmetadata->subfile = (char*)ar_hdr + sizeof(t_ar_hdr);
+				if (((t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr) + ft_atoi((char *)ar_hdr->ar_name + 3)))->cputype == CPU_TYPE_X86_64)
+				{
+					regular_files((t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr) + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata); // TODO : stop when needed
+				}
+				ar_hdr = (t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size) + sizeof(t_ar_hdr));
+				if (!ft_strncmp((char *)ar_hdr, ARMAG, SARMAG))
+				{
+					pass = 1;
+					ar_hdr = (t_ar_hdr*)((char *)ar_hdr + 8);
+				}
 			}
 			else
 				break ;

@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 09:26:17 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/05 16:38:50 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ int		fat_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 	t_fat_arch			*fat_arch;
 	t_mach_header_64	*mach_header_64;
 
-	i = -1;
+	i = 0;
 	fmetadata->to_print = 0;
 	fat_arch = (t_fat_arch*)(fat_header + 1);
-	while (++i < ft_swap_int32(fat_header->nfat_arch))
+	while (i++ < ft_swap_int32(fat_header->nfat_arch))
 	{
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header
 				+ ft_swap_int32(fat_arch->offset));
@@ -69,10 +69,10 @@ int		dont_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 	t_fat_arch			*fat_arch;
 	t_mach_header_64	*mach_header_64;
 
-	i = -1;
+	i = 0;
 	fmetadata->to_print = 0;
 	fat_arch = (t_fat_arch*)(fat_header + 1);
-	while (++i < ft_swap_int32(fat_header->nfat_arch))
+	while (i++ < ft_swap_int32(fat_header->nfat_arch))
 	{
 		mach_header_64 = (t_mach_header_64*)((char *)fat_header
 				+ ft_swap_int32(fat_arch->offset));
