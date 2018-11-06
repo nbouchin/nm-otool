@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 16:10:29 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/06 17:12:15 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,25 @@ t_section_64	*get_current_section(t_load_command const *load_command,
 	return (section);
 }
 
+void			print_section(t_mach_header_64 const *mach_header_64, t_section_64 *section)
+{
+	uint64_t		i;
+	uint8_t		cul;
+	char	*section_string;
+
+	i = 0;
+	section_string = (char *)mach_header_64 + section->offset;
+	while (i <= section->size)
+	{
+		cul = *section_string;
+		ft_printf("%x ", cul);
+		if (i % 16 == 0)
+			ft_putendl("");
+		section_string++;
+		i++;
+	}
+}
+
 t_section_64	*get_section(t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata *metadata)
 {
@@ -112,11 +131,16 @@ t_section_64	*get_section(t_load_command const *load_command,
 	while (i < metadata->nsect)
 	{
 		sectab[i] = *section;
+		if (!ft_strcmp(section->segname, "__TEXT") && !ft_strcmp(section->sectname, "__text"))
+		{
+			print_section(mach_header_64, section);
+			//ft_putendl(section->segname);
+		}
 		if (is_64bits(mach_header_64->magic))
 			section++;
 		else
 			section = (t_section_64*)((t_section*)section + 1);
 		i++;
 	}
-	return (sectab);
+	return (NULL);
 }

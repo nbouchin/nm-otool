@@ -6,11 +6,11 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/10/31 13:41:01 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/11/06 16:07:07 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME    = 	ft_nm
+NAME    = 	ft_otool
 CC      = 	clang
 HEADER  = 	includes/
 LFTDIR	=	srcs/libft/
