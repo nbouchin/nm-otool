@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 17:12:15 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/06 17:45:21 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,18 +101,20 @@ t_section_64	*get_current_section(t_load_command const *load_command,
 
 void			print_section(t_mach_header_64 const *mach_header_64, t_section_64 *section)
 {
-	uint64_t		i;
-	uint8_t		cul;
-	char	*section_string;
+	uint64_t	i;
+	char		*section_string;
+	char		*address;
 
 	i = 0;
+	address = (char*)section->addr;
 	section_string = (char *)mach_header_64 + section->offset;
-	while (i <= section->size)
+	ft_putendl("");
+	while (i < section->size)
 	{
-		cul = *section_string;
-		ft_printf("%x ", cul);
 		if (i % 16 == 0)
-			ft_putendl("");
+			ft_printf("\n%016lx\t", address);
+		ft_printf("%02x ", (uint8_t)*section_string);
+		address++;
 		section_string++;
 		i++;
 	}
