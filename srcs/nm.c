@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 09:02:51 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/06 09:43:33 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ int		archive_files(t_mach_header_64 const *mach_header_64,
 					eof = 1;
 					ar_hdr = (t_ar_hdr*)((char *)ar_hdr + 8);
 				}
-			//	if (is64 && eof)
-			//		break ;
+				if (is64 && eof)
+					break ;
 			}
 			else
 				break ;
@@ -69,6 +69,7 @@ void	init_file_metadata(t_fmetadata *fmetadata, int argc,
 	fmetadata->argc = argc;
 	fmetadata->subfile = NULL;
 	fmetadata->to_print = 1;
+	fmetadata->alone = 0;
 }
 
 void	delete_file_metadata(t_fmetadata *fmetadata)

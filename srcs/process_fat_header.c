@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 16:38:50 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/06 09:43:23 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int		find_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 				+ ft_swap_int32(fat_arch->offset));
 		if (is_64bits(mach_header_64->magic))
 			ret = 1;
+		if (is_32bits(mach_header_64->magic))
+			fmetadata->alone += 1;	
 		fat_arch++;
 	}
 	return (ret);

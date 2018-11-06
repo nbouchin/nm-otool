@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 16:03:59 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/06 09:46:01 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,10 @@ void	print_cputype(t_mach_header_64 const *mach_header_64, int pass,
 	if (ft_swap_int32(mach_header_64->cputype)
 			== CPU_TYPE_POWERPC && pass == 2)
 		ft_printf("\n%s (for architecture ppc):\n", fmetadata->fname);
-	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2)
+	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2 && fmetadata->alone > 1)
 		ft_printf("\n%s (for architecture i386):\n", fmetadata->fname);
+	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2 && fmetadata->alone == 1)
+		ft_printf("%s:\n", fmetadata->fname);
 	else if (ft_swap_int32(mach_header_64->cputype) == CPU_TYPE_POWERPC)
 		ft_printf("%s:\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386)
@@ -118,7 +120,6 @@ int		process_header(t_mach_header_64 const *mach_header_64,
 		pass = 0;
 		fmetadata->new_file = 0;
 	}
-	(void)magic;
 	if (is_64bits(magic))
 	{
 		pass = 1;
