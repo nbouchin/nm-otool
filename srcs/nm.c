@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 09:43:33 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/06 10:55:43 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,9 @@ int		regular_files(t_mach_header_64 const *mach_header_64,
 int		archive_files(t_mach_header_64 const *mach_header_64,
 		t_fmetadata *fmetadata)
 {
-	int					eof;
-	int					is64;
 	t_ar_hdr			*ar_hdr;
+	t_mach_header_64	*mh_64;
 
-	eof = 0;
-	is64 = 0;
 	if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
 	{
 		ar_hdr = (t_ar_hdr*)((char *)mach_header_64 + 8);
@@ -39,19 +36,19 @@ int		archive_files(t_mach_header_64 const *mach_header_64,
 			if (!ft_strncmp(ar_hdr->ar_fmag, ARFMAG, 2))
 			{
 				fmetadata->subfile = (char*)ar_hdr + sizeof(t_ar_hdr);
-				if (((t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr) + ft_atoi((char *)ar_hdr->ar_name + 3)))->cputype == CPU_TYPE_X86_64)
+				mh_64 = (t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr)
+					+ ft_atoi((char *)ar_hdr->ar_name + 3));
+				if (mh_64->cputype == CPU_TYPE_X86_64 && mh_64->cpusubtype
+					!= CPU_SUBTYPE_X86_64_H)
 				{
-					is64 = 1;
-					regular_files((t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr) + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
+					regular_files((t_mach_header_64 *)((char *)ar_hdr +
+						sizeof(t_ar_hdr) +
+							ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
 				}
-				ar_hdr = (t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size) + sizeof(t_ar_hdr));
+				ar_hdr = (t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size) +
+					sizeof(t_ar_hdr));
 				if (!ft_strncmp((char *)ar_hdr, ARMAG, SARMAG))
-				{
-					eof = 1;
 					ar_hdr = (t_ar_hdr*)((char *)ar_hdr + 8);
-				}
-				if (is64 && eof)
-					break ;
 			}
 			else
 				break ;

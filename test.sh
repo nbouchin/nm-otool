@@ -10,6 +10,7 @@ for filename in /bin/* /sbin/* /usr/lib/* /usr/bin/* /usr/sbin/*; do
     then
 	echo "[${RED}ko${NC}] -- $filename"
 	echo "$filename" >> fail.txt
+	sleep 1
     else
 	echo "[${GRN}ok${NC}] -- $filename"
     fi
