@@ -1,12 +1,16 @@
-#!/bin/bash
+#!/bin/zsh
+
+GRN="\033[0;32m"
+RED="\033[0;31m"
+NC="\033[0m"
 
 for filename in /bin/* /sbin/* /usr/lib/* /usr/bin/*; do
-    echo -- $filename
-    RESULT=$(diff <(nm -p $filename) <(./ft_nm $filename))
+    RESULT=$(diff <(nm -p $filename 2>&-) <(./ft_nm $filename 2>&-))
     if [[ $? -ne 0 ]]
     then
- #   nvim -d <(nm -p $filename) <(./ft_nm $filename)
-    echo "$filename" >> fail.txt
+	echo "[${RED}ko${NC}] -- $filename"
+	echo "$filename" >> fail.txt
+    else
+	echo "[${GRN}ok${NC}] -- $filename"
     fi
-#    read 
 done
