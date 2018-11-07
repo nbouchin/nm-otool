@@ -6,13 +6,13 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 09:46:01 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 18:14:39 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
 
-void	get_metadata_64(t_mach_header_64 const *mach_header_64)
+void	get_metadata_64(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
 {
 	uint32_t			ncmds;
 	t_load_command		*lcommand;
@@ -21,6 +21,7 @@ void	get_metadata_64(t_mach_header_64 const *mach_header_64)
 	ncmds = mach_header_64->ncmds;
 	mdata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
 	lcommand = (t_load_command*)(mach_header_64 + 1);
+	mdata->end = (char*)mach_header_64 + fmetadata->size;
 	while (--ncmds)
 	{
 		if (lcommand->cmd == LC_SEGMENT_64)
@@ -31,12 +32,17 @@ void	get_metadata_64(t_mach_header_64 const *mach_header_64)
 			print_symtab(lcommand, mach_header_64, mdata);
 			(mdata->symtab) ? free(mdata->symtab) : 0;
 		}
+		if (is_out((char *)lcommand + lcommand->cmdsize))
+		{
+			free(mdata);
+			return ;
+		}
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);
 	}
 	free(mdata);
 }
 
-void	get_big_metadata_32(t_mach_header_64 const *mach_header_64)
+void	get_big_metadata_32(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
 {
 	uint32_t			ncmds;
 	t_load_command		*lcommand;
@@ -45,6 +51,7 @@ void	get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 	ncmds = ft_swap_int32(mach_header_64->ncmds);
 	metadata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
 	lcommand = (t_load_command*)((t_mach_header*)mach_header_64 + 1);
+	metadata->end = (char*)mach_header_64 + fmetadata->size;
 	while (--ncmds)
 	{
 		if (ft_swap_int32(lcommand->cmd) == LC_SEGMENT)
@@ -55,13 +62,17 @@ void	get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 			print_big_symtab(lcommand, mach_header_64, metadata);
 			(metadata->symtab) ? free(metadata->symtab) : 0;
 		}
-		lcommand = (t_load_command*)((char*)lcommand
-				+ ft_swap_int32(lcommand->cmdsize));
+		if (is_out((char *)lcommand + ft_swap_int32(lcommand->cmdsize)))
+		{
+			free(metadata);
+			return ;
+		}
+		lcommand = (t_load_command*)((char*)lcommand + ft_swap_int32(lcommand->cmdsize));
 	}
 	free(metadata);
 }
 
-void	get_metadata_32(t_mach_header_64 const *mach_header_64)
+void	get_metadata_32(t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata)
 {
 	uint32_t			ncmds;
 	t_load_command		*lcommand;
@@ -69,6 +80,7 @@ void	get_metadata_32(t_mach_header_64 const *mach_header_64)
 
 	ncmds = mach_header_64->ncmds;
 	mdata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
+	mdata->end = (char*)mach_header_64 + fmetadata->size;
 	lcommand = (t_load_command*)((t_mach_header*)mach_header_64 + 1);
 	while (--ncmds)
 	{
@@ -79,6 +91,11 @@ void	get_metadata_32(t_mach_header_64 const *mach_header_64)
 			mdata->symtab = get_symtab(lcommand, mach_header_64);
 			print_symtab(lcommand, mach_header_64, mdata);
 			(mdata->symtab) ? free(mdata->symtab) : 0;
+		}
+		if (is_out((char *)lcommand + lcommand->cmdsize))
+		{
+			free(mdata);
+			return ;
 		}
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);
 	}
@@ -124,16 +141,16 @@ int		process_header(t_mach_header_64 const *mach_header_64,
 	{
 		pass = 1;
 		print_cputype(mach_header_64, pass, fmetadata);
-		get_metadata_64(mach_header_64);
+		get_metadata_64(mach_header_64, fmetadata);
 	}
 	if ((is_32bits(magic) && (pass == 0 || pass == 2)))
 	{
 		pass = 2;
 		print_cputype(mach_header_64, pass, fmetadata);
 		if (mach_header_64->magic == MH_CIGAM)
-			get_big_metadata_32(mach_header_64);
+			get_big_metadata_32(mach_header_64, fmetadata);
 		else
-			get_metadata_32(mach_header_64);
+			get_metadata_32(mach_header_64, fmetadata);
 	}
 	return (1);
 }

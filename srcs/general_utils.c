@@ -6,11 +6,28 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 09:41:22 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 13:51:19 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 18:13:16 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft_nm.h"
+
+int			is_out(char *offset)
+{
+	static char *fsize = 0;
+
+	if (fsize == 0)
+		fsize = offset;
+	else
+	{
+		if (offset > fsize)
+		{
+			ft_putendl("File bad formated");
+			return (1);
+		}
+	}
+	return (0);
+}
 
 int			is_magic(uint32_t magic)
 {

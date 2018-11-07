@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 09:42:29 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 18:11:57 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct ar_hdr				t_ar_hdr;
 
 typedef struct						s_metadata
 {
+	char							*end;
 	int								nsect;
 	t_section_64					*sectab;
 	t_nlist_64						*symtab;
@@ -48,6 +49,7 @@ typedef struct						s_metadata
 
 typedef struct						s_fmetadata
 {
+	size_t							size;
 	int								fd;
 	int								new_file;
 	char							*fname;
@@ -88,5 +90,7 @@ void								print_cputype(t_mach_header_64 const *mach_header_64,
 		int pass, t_fmetadata *fmetadata);
 
 uint32_t							ft_swap_int32(uint32_t x);
+
+int									is_out(char *offset);
 
 #endif

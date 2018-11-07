@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 13:33:50 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 18:13:21 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,11 +136,14 @@ int		main(int argc, char **argv)
 		}
 		mach_header_64 = mmap(NULL, buf.st_size,
 		PROT_WRITE | PROT_READ, MAP_PRIVATE, fmetadata->fd, 0);
+		fmetadata->size = buf.st_size;
 		if (mach_header_64 == MAP_FAILED)
 		{
 			delete_data(mach_header_64, fmetadata, buf, fmetadata->fd);
 			continue ;
 		}
+		if (is_out((char *)mach_header_64 + buf.st_size))
+			return (-1);
 		run_nm(mach_header_64, fmetadata, buf, fmetadata->fd);
 	}
 }

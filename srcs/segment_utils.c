@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 16:10:29 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 18:15:16 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,17 @@ t_section_64	*get_section(t_load_command const *load_command,
 	{
 		sectab[i] = *section;
 		if (is_64bits(mach_header_64->magic))
+		{
+			if (is_out((char *)(section + 1)))
+				return (NULL);
 			section++;
+		}
 		else
+		{
+			if (is_out((char *)((t_section*)section + 1)))
+				return (NULL);
 			section = (t_section_64*)((t_section*)section + 1);
+		}
 		i++;
 	}
 	return (sectab);
