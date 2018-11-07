@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 11:03:08 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 12:14:18 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void			print_section(t_mach_header_64 const *mach_header_64, t_section_64 *secti
 	i = 0;
 	address = (char*)section->addr;
 	section_string = (char *)mach_header_64 + section->offset;
+	ft_putendl("");
 	while (i < section->size)
 	{
 		if (i % 16 == 0)
@@ -133,6 +134,7 @@ void			print_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *se
 	i = 0;
 	address = ((t_section*)section)->addr;
 	section_string = (char *)mach_header_64 + ((t_section*)section)->offset;
+	ft_putendl("");
 	while (i < ((t_section*)section)->size)
 	{
 		if (i % 16 == 0)
@@ -158,6 +160,7 @@ void			print_big_section_32(t_mach_header_64 const *mach_header_64, t_section_64
 	i = 0;
 	address = ft_swap_int32(((t_section*)section)->addr);
 	section_string = (char *)mach_header_64 + ft_swap_int32(((t_section*)section)->offset);
+	ft_putendl("");
 	while (i < ft_swap_int32(((t_section*)section)->size))
 	{
 		if (i % 4 == 0 && i > 0)
@@ -191,7 +194,7 @@ t_section_64	*get_section(t_load_command const *load_command,
 		sectab[i] = *section;
 		if (!ft_strcmp(section->segname, "__TEXT") && !ft_strcmp(section->sectname, "__text"))
 		{
-			ft_printf("Contents of (__TEXT,__text) section\n");
+			ft_printf("Contents of (__TEXT,__text) section");
 			if (is_64bits(mach_header_64->magic))
 				print_section(mach_header_64, section);
 			else

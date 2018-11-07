@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/06 13:33:50 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 12:07:42 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int		archive_files(t_mach_header_64 const *mach_header_64,
 
 	if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
 	{
+		ft_printf("Archive : %s\n", fmetadata->fname);
 		ar_hdr = (t_ar_hdr*)((char *)mach_header_64 + 8);
 		while (42)
 		{
@@ -68,19 +69,18 @@ void	delete_file_metadata(t_fmetadata *fmetadata)
 	free(fmetadata);
 }
 
-void	print_error(char const *file_name, char const *error)
+void	print_error_fd(char const *file_name, char const *error, int fd)
 {
-	ft_putstr_fd("nm: ", 2);
-	ft_putstr_fd(file_name, 2);
-	ft_putendl_fd(error, 2);
+	ft_putstr_fd(file_name, fd);
+	ft_putendl_fd(error, fd);
 }
 
 void	run_archive_files(t_mach_header_64 *mach_header_64,
 		t_fmetadata *fmetadata)
 {
 	if (!archive_files(mach_header_64, fmetadata))
-		print_error(fmetadata->fname,
-				" The file was not recognized as a valide object file\n");
+		print_error_fd(fmetadata->fname,
+				": is not an object file", 1);
 }
 
 void	run_regular_files(t_mach_header_64 *mach_header_64,
@@ -92,9 +92,9 @@ void	run_regular_files(t_mach_header_64 *mach_header_64,
 void	file_error(int fd, t_stat buf, t_fmetadata *fmetadata)
 {
 	if (fstat(fd, &buf) == -1)
-		print_error(fmetadata->fname, ": No such file or directory.");
+		print_error_fd(fmetadata->fname, ": No such file or directory.", 2);
 	else if (S_ISDIR(buf.st_mode))
-		print_error(fmetadata->fname, ": is a directory.");
+		print_error_fd(fmetadata->fname, ": is a directory.", 2);
 	delete_file_metadata(fmetadata);
 }
 
