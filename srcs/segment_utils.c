@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 10:12:13 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 11:03:08 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,17 @@ void			print_section(t_mach_header_64 const *mach_header_64, t_section_64 *secti
 	while (i < section->size)
 	{
 		if (i % 16 == 0)
-			ft_printf("\n%016lx\t", address);
+		{
+			if (i > 0)
+				ft_putendl("");
+			ft_printf("%016lx\t", address);
+		}
 		ft_printf("%02x ", (uint8_t)*section_string);
 		address++;
 		section_string++;
 		i++;
 	}
+	ft_putendl("");
 }
 
 void			print_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *section)
@@ -131,12 +136,17 @@ void			print_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *se
 	while (i < ((t_section*)section)->size)
 	{
 		if (i % 16 == 0)
-			ft_printf("\n%08lx\t", address);
+		{
+			if (i > 0)
+				ft_putendl("");
+			ft_printf("%08lx\t", address);
+		}
 		ft_printf("%02x ", (uint8_t)*section_string);
 		address++;
 		section_string++;
 		i++;
 	}
+	ft_putendl("");
 }
 
 void			print_big_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *section)
@@ -150,15 +160,20 @@ void			print_big_section_32(t_mach_header_64 const *mach_header_64, t_section_64
 	section_string = (char *)mach_header_64 + ft_swap_int32(((t_section*)section)->offset);
 	while (i < ft_swap_int32(((t_section*)section)->size))
 	{
-		if (i % 4 == 0)
+		if (i % 4 == 0 && i > 0)
 			ft_putchar(' ');
 		if (i % 16 == 0)
-			ft_printf("\n%08lx\t", address);
+		{
+			if (i > 0)
+				ft_putendl("");
+			ft_printf("%08lx\t", address);
+		}
 		ft_printf("%02x", (uint8_t)*section_string);
 		address++;
 		section_string++;
 		i++;
 	}
+	ft_putendl(" ");
 }
 
 t_section_64	*get_section(t_load_command const *load_command,
@@ -176,6 +191,7 @@ t_section_64	*get_section(t_load_command const *load_command,
 		sectab[i] = *section;
 		if (!ft_strcmp(section->segname, "__TEXT") && !ft_strcmp(section->sectname, "__text"))
 		{
+			ft_printf("Contents of (__TEXT,__text) section\n");
 			if (is_64bits(mach_header_64->magic))
 				print_section(mach_header_64, section);
 			else

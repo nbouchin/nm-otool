@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 09:16:00 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/07 10:46:33 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,16 +90,14 @@ void	print_cputype(t_mach_header_64 const *mach_header_64, int pass,
 {
 	if (fmetadata->subfile)
 	{
-		ft_printf("\n%s(%s):\n", fmetadata->fname, fmetadata->subfile);
+		ft_printf("%s(%s):\n", fmetadata->fname, fmetadata->subfile);
 		return ;
 	}
-	if (fmetadata->to_print == 0 || fmetadata->argc <= 2)
-		return ;
 	if (ft_swap_int32(mach_header_64->cputype)
 			== CPU_TYPE_POWERPC && pass == 2)
-		ft_printf("\n%s (for architecture ppc):\n", fmetadata->fname);
+		ft_printf("%s (architecture ppc):\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2 && fmetadata->alone > 1)
-		ft_printf("\n%s (for architecture i386):\n", fmetadata->fname);
+		ft_printf("%s (architecture i386):\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2 && fmetadata->alone == 1)
 		ft_printf("%s:\n", fmetadata->fname);
 	else if (ft_swap_int32(mach_header_64->cputype) == CPU_TYPE_POWERPC)
@@ -107,7 +105,7 @@ void	print_cputype(t_mach_header_64 const *mach_header_64, int pass,
 	else if (mach_header_64->cputype == CPU_TYPE_I386)
 		ft_printf("%s:\n", fmetadata->fname);
 	else
-		(fmetadata->argc > 2) ? ft_printf("\n%s:\n", fmetadata->fname) : 0;
+		ft_printf("%s:\n", fmetadata->fname);
 }
 
 int		process_header(t_mach_header_64 const *mach_header_64,
