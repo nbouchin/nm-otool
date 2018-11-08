@@ -6,28 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 11:42:08 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 13:29:55 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/libft_nm.h"
-
-void	process_symtab(t_metadata *mdata,
-		t_mach_header_64 const *mach_header_64,
-		t_load_command *lcommand, int flag)
-{
-	if (flag == 0)
-	{
-		mdata->symtab = get_symtab(lcommand, mach_header_64);
-		print_symtab(lcommand, mach_header_64, mdata);
-	}
-	else if (flag == 1)
-	{
-		mdata->symtab = get_big_symtab(lcommand, mach_header_64);
-		print_big_symtab(lcommand, mach_header_64, mdata);
-	}
-	(mdata->symtab) ? free(mdata->symtab) : 0;
-}
 
 void	get_metadata_64(t_mach_header_64 const *mach_header_64,
 		t_fmetadata *fmetadata)

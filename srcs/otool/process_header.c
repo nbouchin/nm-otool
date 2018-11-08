@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 12:43:48 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 14:33:37 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	get_metadata_64(t_mach_header_64 const *mach_header_64)
 	while (--ncmds)
 	{
 		if (lcommand->cmd == LC_SEGMENT_64)
-			mdata->sectab = get_section(lcommand, mach_header_64, mdata);
+			mdata->sectab = otool_get_section(lcommand, mach_header_64, mdata);
 		else if (lcommand->cmd == LC_SYMTAB)
 			(mdata->symtab) ? free(mdata->symtab) : 0;
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);
@@ -44,7 +44,8 @@ void	get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 	while (--ncmds)
 	{
 		if (swi(lcommand->cmd) == LC_SEGMENT)
-			metadata->sectab = get_section(lcommand, mach_header_64, metadata);
+			metadata->sectab =
+				otool_get_section(lcommand, mach_header_64, metadata);
 		else if (swi(lcommand->cmd) == LC_SYMTAB)
 			(metadata->symtab) ? free(metadata->symtab) : 0;
 		lcommand = (t_load_command*)((char*)lcommand
@@ -65,7 +66,7 @@ void	get_metadata_32(t_mach_header_64 const *mach_header_64)
 	while (--ncmds)
 	{
 		if (lcommand->cmd == LC_SEGMENT)
-			mdata->sectab = get_section(lcommand, mach_header_64, mdata);
+			mdata->sectab = otool_get_section(lcommand, mach_header_64, mdata);
 		else if (lcommand->cmd == LC_SYMTAB)
 			(mdata->symtab) ? free(mdata->symtab) : 0;
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);

@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/11/08 09:28:23 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/11/08 15:03:15 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,19 +22,28 @@ NM_OBJDIR  = 		nm_objs/
 OTOOL_OBJDIR  = 	otool_objs/
 
 NM_SRC		= nm/nm.c \
-		  nm/symtab_utils.c \
-		  nm/process_header.c \
-		  nm/process_fat_header.c \
-		  nm/general_utils.c \
-		  nm/segment_utils.c
+			  nm/nm_utils.c \
+			  nm/process_file.c \
+			  nm/sym_processing.c \
+			  nm/print_utils.c \
+			  nm/alloc_utils.c \
+			  nm/symtab_utils.c \
+			  nm/process_header.c \
+			  nm/process_fat_header.c \
+			  nm/general_utils.c \
+			  nm/int_utils.c \
+			  nm/segment_utils.c
 
 OTOOL_SRC	= otool/otool.c \
-		  otool/symtab_utils.c \
-		  otool/process_header.c \
-		  otool/process_fat_header.c \
-		  otool/general_utils.c \
-		  otool/segment_utils.c
-
+		  nm/nm_utils.c \
+			  otool/process_header.c \
+			  otool/process_fat_header.c \
+			  nm/process_file.c \
+			  nm/general_utils.c \
+			  nm/int_utils.c \
+			  nm/segment_utils.c \
+			  nm/alloc_utils.c \
+			  otool/segment_utils.c
 
 NM_SRCS	= $(addprefix $(SRCDIR), $(NM_SRC))
 NM_OBJS	= $(addprefix $(NM_OBJDIR), $(NM_SRC:.c=.o))
@@ -65,6 +74,7 @@ $(OTOOL_NAME): $(OTOOL_OBJS)
 
 $(OTOOL_OBJDIR):
 	mkdir -p otool_objs/otool
+	mkdir -p otool_objs/nm
 
 $(OTOOL_OBJDIR)%.o: $(SRCDIR)%.c $(HEADER)libft_nm.h
 	$(CC) -o $@ -c $< $(FLAGS) -I $(HEADER)

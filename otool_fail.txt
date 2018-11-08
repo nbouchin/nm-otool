@@ -1,0 +1,4 @@
+/usr/lib/libkmod.a
+/usr/lib/libkmodc++.a
+/usr/lib/libtclstub8.5.a
+/usr/lib/libtkstub8.5.a

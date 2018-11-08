@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 11:42:31 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 15:01:40 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,16 @@ typedef struct						s_fmetadata
 	int								alone;
 }									t_fmetadata;
 
-t_section_64						*get_section(t_load_command const
-*load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata);
-t_section_64						*get_big_section(t_load_command const
-*load_command, t_mach_header_64 const *mach_header_64, t_metadata *metadata);
+t_section_64						*get_section(
+		t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64, t_metadata *metadata);
+t_section_64						*otool_get_section(
+		t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64, t_metadata *metadata);
+t_section_64						*get_big_section(
+		t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64,
+		t_metadata *metadata);
 int									is_magic(uint32_t magic);
 int									is_fat(uint32_t magic);
 int									is_mach(uint32_t magic);
@@ -86,11 +92,68 @@ t_nlist_64							*get_big_symtab(t_load_command const
 		*load_command, t_mach_header_64 const *mach_header_64);
 int									archive_files(t_mach_header_64 const
 		*mach_header_64, t_fmetadata *fmetadata);
-void								print_cputype(t_mach_header_64 const *mach_header_64,
+void								print_cputype(
+		t_mach_header_64 const *mach_header_64,
 		int pass, t_fmetadata *fmetadata);
-
 uint32_t							swi(uint32_t x);
-
 int									is_out(char *offset);
+
+
+t_section_64						*sectab_realloc(t_section_64 *sectab,
+		size_t new_size, uint32_t old_size);
+
+t_section_64						*alloc_sectab_64(t_section_64 *sectab,
+		t_metadata *metadata, t_segment_command_64 const *sc_64);
+
+t_section_64						*alloc_sectab(
+		t_mach_header_64 const *mach_header_64, t_section_64 *sectab,
+		t_metadata *mdata, t_segment_command const *sc);
+
+void								process_symtab(t_metadata *mdata,
+		t_mach_header_64 const *mach_header_64,
+		t_load_command *lcommand, int flag);
+
+
+void								print_symbol_32(uint64_t const n_value,
+		char const letter, char const *symname, t_metadata const *metadata);
+void								print_symbol_64(uint64_t const n_value,
+		char const letter, char const *symname, t_metadata const *metadata);
+
+char								get_type_char(t_metadata const *mdata,
+		int const i);
+char								*get_st(char *string_table,
+		t_metadata const *metadata, int i);
+void								get_symbol(uint64_t const n_value,
+		char const *symbol_name, t_metadata const *metadata, int const i);
+
+void								gsym_64(uint64_t const n_value,
+		char const *symbol_name, t_metadata const *metadata, int const i);
+char								*bst(char *string_table,
+		t_metadata const *metadata, int i);
+t_ar_hdr							*ret_ar_hdr(t_ar_hdr *ar_hdr);
+t_mach_header_64					*ret_mach_header(t_ar_hdr *ar_hdr);
+void								delete_file_metadata(
+		t_fmetadata *fmetadata);
+void								delete_data(
+		t_mach_header_64 *mach_header_64,
+		t_fmetadata *fmetadata, t_stat buf, int fd);
+void								file_error(int fd, t_stat buf,
+		t_fmetadata *fmetadata);
+void								run_nm(t_mach_header_64 *mach_header_64,
+		t_fmetadata *fmetadata, t_stat buf, int fd);
+int									regular_files(
+		t_mach_header_64 const *mach_header_64, t_fmetadata *fmetadata);
+void								run_archive_files(
+		t_mach_header_64 *mach_header_64, t_fmetadata *fmetadata);
+void								run_regular_files(
+		t_mach_header_64 *mach_header_64, t_fmetadata *fmetadata);
+void								init_file_metadata(
+		t_fmetadata *fmetadata, int argc, char **argv, int nb_file);
+t_section_64						*get_current_section(
+		t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64);
+t_section_64						*get_sectab(
+		t_load_command const *load_command,
+		t_mach_header_64 const *mach_header_64, t_metadata *metadata);
 
 #endif
