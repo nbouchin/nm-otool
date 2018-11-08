@@ -6,11 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 18:15:16 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 11:42:08 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft_nm.h"
+#include "../../includes/libft_nm.h"
 
 t_section_64	*sectab_realloc(t_section_64 *sectab, size_t new_size,
 		uint32_t old_size)
@@ -44,9 +44,9 @@ t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64,
 	old_size = mdata->nsect;
 	if (mach_header_64->magic == MH_CIGAM)
 	{
-		mdata->nsect += ft_swap_int32(sc->nsects);
+		mdata->nsect += swi(sc->nsects);
 		sectab = (sectab == NULL)
-		? ft_memalloc(ft_swap_int32(sc->nsects) * sizeof(t_section_64))
+		? ft_memalloc(swi(sc->nsects) * sizeof(t_section_64))
 		: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), old_size);
 	}
 	else

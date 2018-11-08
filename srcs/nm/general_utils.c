@@ -6,11 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 09:41:22 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 18:13:16 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 11:41:36 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft_nm.h"
+#include "../../includes/libft_nm.h"
 
 int			is_out(char *offset)
 {
@@ -73,7 +73,7 @@ int			is_32bits(uint32_t magic)
 	return (0);
 }
 
-uint32_t	ft_swap_int32(uint32_t x)
+uint32_t	swi(uint32_t x)
 {
 	return ((((((x) & 0xff000000) >> 24) |
 					(((x) & 0x00ff0000) >> 8) |

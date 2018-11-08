@@ -6,11 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:49:09 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 10:46:33 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 12:43:48 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft_nm.h"
+#include "../../includes/libft_nm.h"
 
 void	get_metadata_64(t_mach_header_64 const *mach_header_64)
 {
@@ -26,11 +26,7 @@ void	get_metadata_64(t_mach_header_64 const *mach_header_64)
 		if (lcommand->cmd == LC_SEGMENT_64)
 			mdata->sectab = get_section(lcommand, mach_header_64, mdata);
 		else if (lcommand->cmd == LC_SYMTAB)
-		{
-//			mdata->symtab = get_symtab(lcommand, mach_header_64);
-//			print_symtab(lcommand, mach_header_64, mdata);
 			(mdata->symtab) ? free(mdata->symtab) : 0;
-		}
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);
 	}
 	free(mdata);
@@ -42,21 +38,17 @@ void	get_big_metadata_32(t_mach_header_64 const *mach_header_64)
 	t_load_command		*lcommand;
 	t_metadata			*metadata;
 
-	ncmds = ft_swap_int32(mach_header_64->ncmds);
+	ncmds = swi(mach_header_64->ncmds);
 	metadata = (t_metadata*)ft_memalloc(sizeof(t_metadata));
 	lcommand = (t_load_command*)((t_mach_header*)mach_header_64 + 1);
 	while (--ncmds)
 	{
-		if (ft_swap_int32(lcommand->cmd) == LC_SEGMENT)
+		if (swi(lcommand->cmd) == LC_SEGMENT)
 			metadata->sectab = get_section(lcommand, mach_header_64, metadata);
-		else if (ft_swap_int32(lcommand->cmd) == LC_SYMTAB)
-		{
-//			metadata->symtab = get_big_symtab(lcommand, mach_header_64);
-//			print_big_symtab(lcommand, mach_header_64, metadata);
+		else if (swi(lcommand->cmd) == LC_SYMTAB)
 			(metadata->symtab) ? free(metadata->symtab) : 0;
-		}
 		lcommand = (t_load_command*)((char*)lcommand
-				+ ft_swap_int32(lcommand->cmdsize));
+				+ swi(lcommand->cmdsize));
 	}
 	free(metadata);
 }
@@ -75,11 +67,7 @@ void	get_metadata_32(t_mach_header_64 const *mach_header_64)
 		if (lcommand->cmd == LC_SEGMENT)
 			mdata->sectab = get_section(lcommand, mach_header_64, mdata);
 		else if (lcommand->cmd == LC_SYMTAB)
-		{
-//			mdata->symtab = get_symtab(lcommand, mach_header_64);
-//			print_symtab(lcommand, mach_header_64, mdata);
 			(mdata->symtab) ? free(mdata->symtab) : 0;
-		}
 		lcommand = (t_load_command*)((char*)lcommand + lcommand->cmdsize);
 	}
 	free(mdata);
@@ -93,14 +81,16 @@ void	print_cputype(t_mach_header_64 const *mach_header_64, int pass,
 		ft_printf("%s(%s):\n", fmetadata->fname, fmetadata->subfile);
 		return ;
 	}
-	if (ft_swap_int32(mach_header_64->cputype)
+	if (swi(mach_header_64->cputype)
 			== CPU_TYPE_POWERPC && pass == 2)
 		ft_printf("%s (architecture ppc):\n", fmetadata->fname);
-	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2 && fmetadata->alone > 1)
+	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2
+			&& fmetadata->alone > 1)
 		ft_printf("%s (architecture i386):\n", fmetadata->fname);
-	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2 && fmetadata->alone == 1)
+	else if (mach_header_64->cputype == CPU_TYPE_I386 && pass == 2
+			&& fmetadata->alone == 1)
 		ft_printf("%s:\n", fmetadata->fname);
-	else if (ft_swap_int32(mach_header_64->cputype) == CPU_TYPE_POWERPC)
+	else if (swi(mach_header_64->cputype) == CPU_TYPE_POWERPC)
 		ft_printf("%s:\n", fmetadata->fname);
 	else if (mach_header_64->cputype == CPU_TYPE_I386)
 		ft_printf("%s:\n", fmetadata->fname);

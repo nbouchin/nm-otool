@@ -6,11 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 18:17:27 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 12:40:03 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft_nm.h"
+#include "../../includes/libft_nm.h"
 
 void			ft_putnendl(const char *str, size_t length)
 {
@@ -69,7 +69,7 @@ char			get_type_char(t_metadata const *mdata, int const i)
 	return (to_ret);
 }
 
-void			get_symbol_64(uint64_t const n_value, char const *symbol_name,
+void			gsym_64(uint64_t const n_value, char const *symbol_name,
 		t_metadata const *metadata, int const i)
 {
 	char	letter;
@@ -118,121 +118,128 @@ void			get_symbol(uint64_t const n_value, char const *symbol_name,
 		print_symbol_32(n_value, letter, symbol_name, metadata);
 }
 
-void			print_symtab(t_load_command const *load_command,
-		t_mach_header_64 const *mach_header_64, t_metadata const *metadata)
+char			*get_st(char *string_table, t_metadata const *metadata, int i)
+{
+	return ((char *)string_table
+					+ metadata->symtab[i].n_un.n_strx);
+}
+
+char			*bst(char *string_table,
+		t_metadata const *metadata, int i)
+{
+	return ((char *)string_table
+					+ swi(metadata->symtab[i].n_un.n_strx));
+}
+
+void			print_symtab(t_load_command const *lc,
+		t_mach_header_64 const *mach_header_64, t_metadata const *md)
 {
 	uint32_t		i;
-	char			*string_table;
+	char			*st;
 
 	i = -1;
-	if (is_out((char *)mach_header_64 + ((t_symtab_command*)load_command)->stroff))
+	if (is_out((char *)mach_header_64 + ((t_symtab_command*)lc)->stroff))
 		return ;
-	string_table = (char *)((char *)mach_header_64 +
-			((t_symtab_command*)load_command)->stroff);
-	while (++i < ((t_symtab_command*)load_command)->nsyms)
+	st = ((char *)mach_header_64 + ((t_symtab_command*)lc)->stroff);
+	while (++i < ((t_symtab_command*)lc)->nsyms)
 	{
 		if (is_64bits(mach_header_64->magic))
 		{
-			if (is_out((char *)string_table + metadata->symtab[i].n_un.n_strx))
+			if (is_out((char *)st + md->symtab[i].n_un.n_strx))
 				return ;
-			get_symbol_64(metadata->symtab[i].n_value, (char *)string_table + metadata->symtab[i].n_un.n_strx, metadata, i);
+			gsym_64(md->symtab[i].n_value, get_st(st, md, i), md, i);
 		}
 		else
 		{
-			if (is_out((char *)string_table + (metadata->symtab)[i].n_un.n_strx))
+			if (is_out((char *)st + (md->symtab)[i].n_un.n_strx))
 				return ;
-			get_symbol((metadata->symtab)[i].n_value, (char *)string_table + (metadata->symtab)[i].n_un.n_strx, metadata, i);
+			get_symbol((md->symtab)[i].n_value, get_st(st, md, i), md, i);
 		}
 	}
 }
 
-void			print_big_symtab(t_load_command const *load_command,
-		t_mach_header_64 const *mach_header_64, t_metadata const *mdata)
+void			print_big_symtab(t_load_command const *lc,
+		t_mach_header_64 const *mach_header_64, t_metadata const *md)
 {
 	uint32_t		i;
 	char			*stable;
 
 	i = -1;
-	if (is_out((char *)mach_header_64 + ft_swap_int32(((t_symtab_command*)load_command)->stroff)))
+	if (is_out((char *)mach_header_64 + swi(((t_symtab_command*)lc)->stroff)))
 		return ;
-	stable = (char *)((char *)mach_header_64 + ft_swap_int32(((t_symtab_command*)load_command)->stroff));
-	while (++i < ft_swap_int32(((t_symtab_command*)load_command)->nsyms))
+	stable = ((char *)mach_header_64 + swi(((t_symtab_command*)lc)->stroff));
+	while (++i < swi(((t_symtab_command*)lc)->nsyms))
 	{
 		if (is_64bits(mach_header_64->magic))
 		{
-			if (is_out((char*)stable + ft_swap_int32(mdata->symtab[i].n_un.n_strx)))
+			if (is_out(bst(stable, md, i)))
 				return ;
-			get_symbol_64(ft_swap_int32(mdata->symtab[i].n_value), (char *)stable + ft_swap_int32(mdata->symtab[i].n_un.n_strx), mdata, i);
+			gsym_64(swi(md->symtab[i].n_value), bst(stable, md, i), md, i);
 		}
 		else
 		{
-			if (is_out((char*)stable + ft_swap_int32((mdata->symtab)[i].n_un.n_strx)))
+			if (bst(stable, md, i))
 				return ;
-			get_symbol(ft_swap_int32((mdata->symtab)[i].n_value), (char*)stable + ft_swap_int32((mdata->symtab)[i].n_un.n_strx), mdata, i);
+			get_symbol(swi((md->symtab)[i].n_value), bst(stable, md, i), md, i);
 		}
 	}
 }
 
-t_nlist_64		*get_big_symtab(t_load_command const *load_command,
-		t_mach_header_64 const *mach_header_64)
+t_nlist_64		*get_big_symtab(t_load_command const *lc,
+		t_mach_header_64 const *mh)
 {
 	uint32_t			i;
-	t_nlist_64			*nlist_64;
-	t_nlist_64			*symtab;
+	t_nlist_64			*nlist;
+	t_nlist_64			*st;
 
 	i = -1;
-	if (is_out((char *)mach_header_64 + ft_swap_int32(((t_symtab_command*)load_command)->symoff)))
+	if (is_out((char *)mh + swi(((t_symtab_command*)lc)->symoff)))
 		return (NULL);
-	nlist_64 = (t_nlist_64 *)((char *)mach_header_64 + ft_swap_int32(((t_symtab_command*)load_command)->symoff));
-	symtab = ft_memalloc(ft_swap_int32(((t_symtab_command*)load_command)->nsyms)
-			* sizeof(t_nlist_64));
-	while (++i < ft_swap_int32(((t_symtab_command*)load_command)->nsyms))
+	nlist = (t_nlist_64 *)((char *)mh + swi(((t_symtab_command*)lc)->symoff));
+	st = ft_memalloc(swi(((t_symtab_command*)lc)->nsyms) * sizeof(t_nlist_64));
+	while (++i < swi(((t_symtab_command*)lc)->nsyms))
 	{
-		symtab[i] = *nlist_64;
-		if (is_64bits(mach_header_64->magic))
+		st[i] = *nlist;
+		if (is_64bits(mh->magic))
 		{
-			if (is_out((char*)(nlist_64 + 1)))
+			if (is_out((char*)(nlist++ + 1)))
 				return (NULL);
-			nlist_64++;
 		}
 		else
 		{
-			if (is_out((char*)(t_nlist*)(nlist_64 + 1)))
+			if (is_out((char*)(t_nlist*)(nlist + 1)))
 				return (NULL);
-			nlist_64 = (t_nlist_64*)((t_nlist*)nlist_64 + 1);
+			nlist = (t_nlist_64*)((t_nlist*)nlist + 1);
 		}
 	}
-	return (symtab);
+	return (st);
 }
 
-t_nlist_64		*get_symtab(t_load_command const *load_command,
-		t_mach_header_64 const *mach_header_64)
+t_nlist_64		*get_symtab(t_load_command const *lc,
+		t_mach_header_64 const *mh)
 {
 	uint32_t			i;
-	t_nlist_64			*nlist_64;
+	t_nlist_64			*nlist;
 	t_nlist_64			*symtab;
 
 	i = -1;
-	if (is_out((char*)mach_header_64 + ((t_symtab_command*)load_command)->symoff))
+	if (is_out((char*)mh + ((t_symtab_command*)lc)->symoff))
 		return (NULL);
-	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
-			+ ((t_symtab_command*)load_command)->symoff);
-	symtab = ft_memalloc(((t_symtab_command*)load_command)->nsyms
-			* sizeof(t_nlist_64));
-	while (++i < ((t_symtab_command*)load_command)->nsyms)
+	nlist = (t_nlist_64 *)((char *)mh + ((t_symtab_command*)lc)->symoff);
+	symtab = ft_memalloc(((t_symtab_command*)lc)->nsyms * sizeof(t_nlist_64));
+	while (++i < ((t_symtab_command*)lc)->nsyms)
 	{
-		symtab[i] = *nlist_64;
-		if (is_64bits(mach_header_64->magic))
+		symtab[i] = *nlist;
+		if (is_64bits(mh->magic))
 		{
-			if (is_out((char *)nlist_64 + 1))
+			if (is_out((char *)nlist++ + 1))
 				return (NULL);
-			nlist_64++;
 		}
 		else
 		{
-			if (is_out((char *)(t_nlist*)nlist_64 + 1))
+			if (is_out((char *)(t_nlist*)nlist + 1))
 				return (NULL);
-			nlist_64 = (t_nlist_64*)((t_nlist*)nlist_64 + 1);
+			nlist = (t_nlist_64*)((t_nlist*)nlist + 1);
 		}
 	}
 	return (symtab);

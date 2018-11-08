@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm.c                                               :+:      :+:    :+:   */
+/*   otool.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 12:07:42 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 12:54:18 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft_nm.h"
+#include "../../includes/libft_nm.h"
 
-int		regular_files(t_mach_header_64 const *mach_header_64,
+int					regular_files(t_mach_header_64 const *mach_header_64,
 		t_fmetadata *fmetadata)
 {
 	if (is_fat(mach_header_64->magic))
@@ -22,7 +22,19 @@ int		regular_files(t_mach_header_64 const *mach_header_64,
 	return (1);
 }
 
-int		archive_files(t_mach_header_64 const *mach_header_64,
+t_mach_header_64	*ret_mach_header(t_ar_hdr *ar_hdr)
+{
+	return ((t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr)
+				+ ft_atoi((char *)ar_hdr->ar_name + 3)));
+}
+
+t_ar_hdr			*ret_ar_hdr(t_ar_hdr *ar_hdr)
+{
+	return ((t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size)
+				+ sizeof(t_ar_hdr)));
+}
+
+int					archive_files(t_mach_header_64 const *mach_header_64,
 		t_fmetadata *fmetadata)
 {
 	t_ar_hdr			*ar_hdr;
@@ -33,26 +45,25 @@ int		archive_files(t_mach_header_64 const *mach_header_64,
 		ft_printf("Archive : %s\n", fmetadata->fname);
 		ar_hdr = (t_ar_hdr*)((char *)mach_header_64 + 8);
 		while (42)
-		{
 			if (!ft_strncmp(ar_hdr->ar_fmag, ARFMAG, 2))
 			{
 				fmetadata->subfile = (char*)ar_hdr + sizeof(t_ar_hdr);
-				mh_64 = (t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr) + ft_atoi((char *)ar_hdr->ar_name + 3));
-				if (mh_64->cputype == CPU_TYPE_X86_64 && mh_64->cpusubtype != CPU_SUBTYPE_X86_64_H)
-					regular_files((t_mach_header_64 *)((char *)ar_hdr + sizeof(t_ar_hdr) + ft_atoi((char *)ar_hdr->ar_name + 3)), fmetadata);
-				ar_hdr = (t_ar_hdr*)((char *)ar_hdr + ft_atoi(ar_hdr->ar_size) + sizeof(t_ar_hdr));
+				mh_64 = ret_mach_header(ar_hdr);
+				if (mh_64->cputype == CPU_TYPE_X86_64
+						&& mh_64->cpusubtype != CPU_SUBTYPE_X86_64_H)
+					regular_files(ret_mach_header(ar_hdr), fmetadata);
+				ar_hdr = ret_ar_hdr(ar_hdr);
 				if (!ft_strncmp((char *)ar_hdr, ARMAG, SARMAG))
 					ar_hdr = (t_ar_hdr*)((char *)ar_hdr + 8);
 			}
 			else
 				break ;
-		}
 		return (1);
 	}
 	return (0);
 }
 
-void	init_file_metadata(t_fmetadata *fmetadata, int argc,
+void				init_file_metadata(t_fmetadata *fmetadata, int argc,
 		char **argv, int nb_file)
 {
 	fmetadata->new_file = 1;
@@ -63,19 +74,20 @@ void	init_file_metadata(t_fmetadata *fmetadata, int argc,
 	fmetadata->alone = 0;
 }
 
-void	delete_file_metadata(t_fmetadata *fmetadata)
+void				delete_file_metadata(t_fmetadata *fmetadata)
 {
 	free(fmetadata->fname);
 	free(fmetadata);
 }
 
-void	print_error_fd(char const *file_name, char const *error, int fd)
+void				print_error_fd(char const *file_name,
+		char const *error, int fd)
 {
 	ft_putstr_fd(file_name, fd);
 	ft_putendl_fd(error, fd);
 }
 
-void	run_archive_files(t_mach_header_64 *mach_header_64,
+void				run_archive_files(t_mach_header_64 *mach_header_64,
 		t_fmetadata *fmetadata)
 {
 	if (!archive_files(mach_header_64, fmetadata))
@@ -83,13 +95,13 @@ void	run_archive_files(t_mach_header_64 *mach_header_64,
 				": is not an object file", 1);
 }
 
-void	run_regular_files(t_mach_header_64 *mach_header_64,
+void				run_regular_files(t_mach_header_64 *mach_header_64,
 		t_fmetadata *fmetadata)
 {
 	regular_files(mach_header_64, fmetadata);
 }
 
-void	file_error(int fd, t_stat buf, t_fmetadata *fmetadata)
+void				file_error(int fd, t_stat buf, t_fmetadata *fmetadata)
 {
 	if (fstat(fd, &buf) == -1)
 		print_error_fd(fmetadata->fname, ": No such file or directory.", 2);
@@ -98,7 +110,7 @@ void	file_error(int fd, t_stat buf, t_fmetadata *fmetadata)
 	delete_file_metadata(fmetadata);
 }
 
-void	delete_data(t_mach_header_64 *mach_header_64,
+void				delete_data(t_mach_header_64 *mach_header_64,
 		t_fmetadata *fmetadata, t_stat buf, int fd)
 {
 	delete_file_metadata(fmetadata);
@@ -106,8 +118,8 @@ void	delete_data(t_mach_header_64 *mach_header_64,
 	close(fd);
 }
 
-void	run_nm(t_mach_header_64 *mach_header_64, t_fmetadata *fmetadata,
-		t_stat buf, int fd)
+void				run_nm(t_mach_header_64 *mach_header_64,
+		t_fmetadata *fmetadata, t_stat buf, int fd)
 {
 	if (is_magic(mach_header_64->magic))
 		run_regular_files(mach_header_64, fmetadata);
@@ -116,7 +128,7 @@ void	run_nm(t_mach_header_64 *mach_header_64, t_fmetadata *fmetadata,
 	delete_data(mach_header_64, fmetadata, buf, fd);
 }
 
-int		main(int argc, char **argv)
+int					main(int argc, char **argv)
 {
 	int					nb_file;
 	t_stat				buf;
@@ -135,7 +147,7 @@ int		main(int argc, char **argv)
 			continue ;
 		}
 		mach_header_64 = mmap(NULL, buf.st_size,
-		PROT_WRITE | PROT_READ, MAP_PRIVATE, fmetadata->fd, 0);
+				PROT_WRITE | PROT_READ, MAP_PRIVATE, fmetadata->fd, 0);
 		if (mach_header_64 == MAP_FAILED)
 		{
 			delete_data(mach_header_64, fmetadata, buf, fmetadata->fd);

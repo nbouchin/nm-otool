@@ -6,11 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 17:00:08 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/07 12:24:03 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 13:09:10 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft_nm.h"
+#include "../../includes/libft_nm.h"
 
 t_section_64	*sectab_realloc(t_section_64 *sectab, size_t new_size,
 		uint32_t old_size)
@@ -31,8 +31,8 @@ t_section_64	*alloc_sectab_64(t_section_64 *sectab, t_metadata *metadata,
 	old_size = metadata->nsect;
 	metadata->nsect += sc_64->nsects;
 	sectab = (sectab == NULL)
-		? ft_memalloc(sc_64->nsects * sizeof(t_section_64))
-		: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), old_size);
+	? ft_memalloc(sc_64->nsects * sizeof(t_section_64))
+	: sectab_realloc(sectab, metadata->nsect * sizeof(t_section_64), old_size);
 	return (sectab);
 }
 
@@ -44,17 +44,17 @@ t_section_64	*alloc_sectab(t_mach_header_64 const *mach_header_64,
 	old_size = mdata->nsect;
 	if (mach_header_64->magic == MH_CIGAM)
 	{
-		mdata->nsect += ft_swap_int32(sc->nsects);
+		mdata->nsect += swi(sc->nsects);
 		sectab = (sectab == NULL)
-			? ft_memalloc(ft_swap_int32(sc->nsects) * sizeof(t_section_64))
-			: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), old_size);
+		? ft_memalloc(swi(sc->nsects) * sizeof(t_section_64))
+		: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), old_size);
 	}
 	else
 	{
 		mdata->nsect += sc->nsects;
 		sectab = (sectab == NULL)
-			? ft_memalloc(sc->nsects * sizeof(t_section_64))
-			: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), old_size);
+		? ft_memalloc(sc->nsects * sizeof(t_section_64))
+		: sectab_realloc(sectab, mdata->nsect * sizeof(t_section_64), old_size);
 	}
 	return (sectab);
 }
@@ -99,7 +99,8 @@ t_section_64	*get_current_section(t_load_command const *load_command,
 	return (section);
 }
 
-void			print_section(t_mach_header_64 const *mach_header_64, t_section_64 *section)
+void			print_section(t_mach_header_64 const *mach_header_64,
+		t_section_64 *section)
 {
 	uint64_t	i;
 	char		*section_string;
@@ -118,7 +119,7 @@ void			print_section(t_mach_header_64 const *mach_header_64, t_section_64 *secti
 				ft_putendl("");
 			ft_printf("%016lx\t", address);
 		}
-		ft_printf("%02x ", (uint8_t)*section_string);
+		ft_printf("%02x ", (uint8_t)(*section_string));
 		address++;
 		section_string++;
 		i++;
@@ -126,7 +127,8 @@ void			print_section(t_mach_header_64 const *mach_header_64, t_section_64 *secti
 	ft_putendl("");
 }
 
-void			print_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *section)
+void			print_section_32(t_mach_header_64 const *mach_header_64,
+		t_section_64 *section)
 {
 	uint32_t	i;
 	char		*section_string;
@@ -145,7 +147,7 @@ void			print_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *se
 				ft_putendl("");
 			ft_printf("%08lx\t", address);
 		}
-		ft_printf("%02x ", (uint8_t)*section_string);
+		ft_printf("%02x ", (uint8_t)(*section_string));
 		address++;
 		section_string++;
 		i++;
@@ -153,16 +155,17 @@ void			print_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *se
 	ft_putendl("");
 }
 
-void			print_big_section_32(t_mach_header_64 const *mach_header_64, t_section_64 *section)
+void			print_big_section_32(t_mach_header_64 const *mach_header_64,
+		t_section_64 *section)
 {
 	uint32_t	i;
-	char		*section_string;
+	char		*st;
 	uint32_t	address;
 
 	i = 0;
-	address = ft_swap_int32(((t_section*)section)->addr);
-	section_string = (char *)mach_header_64 + ft_swap_int32(((t_section*)section)->offset);
-	while (i < ft_swap_int32(((t_section*)section)->size))
+	address = swi(((t_section*)section)->addr);
+	st = (char *)mach_header_64 + swi(((t_section*)section)->offset);
+	while (i < swi(((t_section*)section)->size))
 	{
 		if (i == 0)
 			ft_putendl("");
@@ -174,12 +177,31 @@ void			print_big_section_32(t_mach_header_64 const *mach_header_64, t_section_64
 				ft_putendl("");
 			ft_printf("%08lx\t", address);
 		}
-		ft_printf("%02x", (uint8_t)*section_string);
+		ft_printf("%02x", (uint8_t)(*st));
 		address++;
-		section_string++;
+		st++;
 		i++;
 	}
 	ft_putendl(" ");
+}
+
+void			process_section_32(t_mach_header_64 const *mach_header_64,
+		t_section_64 *section)
+{
+	if (mach_header_64->magic == MH_CIGAM)
+		print_big_section_32(mach_header_64, section);
+	else
+		print_section_32(mach_header_64, section);
+}
+
+void			process_section(t_mach_header_64 const *mach_header_64,
+		t_section_64 *section)
+{
+	ft_printf("Contents of (__TEXT,__text) section");
+	if (is_64bits(mach_header_64->magic))
+		print_section(mach_header_64, section);
+	else
+		process_section_32(mach_header_64, section);
 }
 
 t_section_64	*get_section(t_load_command const *load_command,
@@ -195,19 +217,9 @@ t_section_64	*get_section(t_load_command const *load_command,
 	while (i < metadata->nsect)
 	{
 		sectab[i] = *section;
-		if (!ft_strcmp(section->segname, "__TEXT") && !ft_strcmp(section->sectname, "__text"))
-		{
-			ft_printf("Contents of (__TEXT,__text) section");
-			if (is_64bits(mach_header_64->magic))
-				print_section(mach_header_64, section);
-			else
-			{
-				if (mach_header_64->magic == MH_CIGAM)
-					print_big_section_32(mach_header_64, section);
-				else
-					print_section_32(mach_header_64, section);
-			}
-		}
+		if (!ft_strcmp(section->segname, "__TEXT")
+				&& !ft_strcmp(section->sectname, "__text"))
+			process_section(mach_header_64, section);
 		if (is_64bits(mach_header_64->magic))
 			section++;
 		else

@@ -6,11 +6,11 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/05 16:09:53 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 12:42:20 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft_nm.h"
+#include "../../includes/libft_nm.h"
 
 void			print_symbol(uint64_t const n_value, char const letter,
 		char const *symname, int const arch_type)
@@ -119,16 +119,16 @@ void			print_big_symtab(t_load_command const *load_command,
 
 	i = -1;
 	stable = (char *)((char *)mach_header_64
-			+ ft_swap_int32(((t_symtab_command*)load_command)->stroff));
-	while (++i < ft_swap_int32(((t_symtab_command*)load_command)->nsyms))
+			+ swi(((t_symtab_command*)load_command)->stroff));
+	while (++i < swi(((t_symtab_command*)load_command)->nsyms))
 	{
 		if (is_64bits(mach_header_64->magic))
-			get_symbol_64(ft_swap_int32(mdata->symtab[i].n_value),
-			(char *)stable + ft_swap_int32(mdata->symtab[i].n_un.n_strx),
+			get_symbol_64(swi(mdata->symtab[i].n_value),
+			(char *)stable + swi(mdata->symtab[i].n_un.n_strx),
 			mdata, i);
 		else
-			get_symbol(ft_swap_int32((mdata->symtab)[i].n_value), (char*)stable
-					+ ft_swap_int32((mdata->symtab)[i].n_un.n_strx), mdata, i);
+			get_symbol(swi((mdata->symtab)[i].n_value), (char*)stable
+					+ swi((mdata->symtab)[i].n_un.n_strx), mdata, i);
 	}
 }
 
@@ -141,10 +141,10 @@ t_nlist_64		*get_big_symtab(t_load_command const *load_command,
 
 	i = -1;
 	nlist_64 = (t_nlist_64 *)((char *)mach_header_64
-			+ ft_swap_int32(((t_symtab_command*)load_command)->symoff));
-	symtab = ft_memalloc(ft_swap_int32(((t_symtab_command*)load_command)->nsyms)
+			+ swi(((t_symtab_command*)load_command)->symoff));
+	symtab = ft_memalloc(swi(((t_symtab_command*)load_command)->nsyms)
 			* sizeof(t_nlist_64));
-	while (++i < ft_swap_int32(((t_symtab_command*)load_command)->nsyms))
+	while (++i < swi(((t_symtab_command*)load_command)->nsyms))
 	{
 		symtab[i] = *nlist_64;
 		if (is_64bits(mach_header_64->magic))
