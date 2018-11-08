@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/11/08 09:18:03 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/11/08 09:28:23 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,8 @@ NM_OBJS	= $(addprefix $(NM_OBJDIR), $(NM_SRC:.c=.o))
 OTOOL_SRCS	= $(addprefix $(SRCDIR), $(OTOOLSRC))
 OTOOL_OBJS	= $(addprefix $(OTOOL_OBJDIR), $(OTOOL_SRC:.c=.o))
 
+all: $(NM_OBJDIR) $(OTOOL_OBJDIR) $(OTOOL_NAME) $(NM_NAME) nm otool
+
 nm: $(NM_OBJDIR) $(NM_NAME)
 
 $(NM_NAME): $(NM_OBJS)
@@ -66,18 +68,6 @@ $(OTOOL_OBJDIR):
 
 $(OTOOL_OBJDIR)%.o: $(SRCDIR)%.c $(HEADER)libft_nm.h
 	$(CC) -o $@ -c $< $(FLAGS) -I $(HEADER)
-
-#all: $(OBJDIR) $(NAME)
-#
-#$(NAME): $(OBJS)
-#	make -C srcs/libft
-#	$(CC) $(FLAGS) -L./$(LFTDIR) -lft -L./$(LFTPDIR) -lftprintf -I $(HEADER) -o $(NAME) $(OBJS)
-#
-#$(OBJDIR):
-#	mkdir -p objs
-#
-#$(OBJDIR)%.o: $(SRCDIR)%.c $(HEADER)libft_nm.h
-#	$(CC) -o $@ -c $< $(FLAGS) -I $(HEADER)
 
 clean:
 	rm -rf otool_objs
