@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 09:22:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 14:32:09 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 16:02:32 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int		fat_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 		{
 			if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
 			{
-				archive_files(mach_header_64, fmetadata);
+				otool_archive_files(mach_header_64, fmetadata);
 				return (1);
 			}
 			process_header(mach_header_64,
@@ -82,7 +82,7 @@ int		dont_have_64(t_fat_header const *fat_header, t_fmetadata *fmetadata)
 		fmetadata->argc += 1;
 		if (!ft_strncmp((char *)mach_header_64, ARMAG, SARMAG))
 		{
-			archive_files(mach_header_64, fmetadata);
+			otool_archive_files(mach_header_64, fmetadata);
 			return (1);
 		}
 		process_header(mach_header_64,
