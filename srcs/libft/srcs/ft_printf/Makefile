@@ -6,14 +6,14 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/09/28 15:58:04 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/10/26 11:10:57 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME   	= 	libftprintf.a
 CC     	= 	clang
 HEADER 	= 	includes/
-FLAGS  	= 	-Wall -Wextra -Werror
+FLAGS  	= 	-Wall -Wextra -Werror -g
 SRCDIR 	= 	srcs/
 OBJDIR 	= 	objs/
 SRC		=	ft_printf.c	\

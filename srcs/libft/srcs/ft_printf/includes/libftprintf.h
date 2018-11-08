@@ -6,7 +6,7 @@
 /*   By: nbouchin <nbouchin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/19 16:21:37 by nbouchin          #+#    #+#             */
-/*   Updated: 2017/07/27 15:39:43 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/10/26 10:23:44 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,16 @@ typedef struct		s_flag
 	int				sharp;
 	int				zero;
 	int				width;
+
 	enum
 	{
-					none,
-					h,
-					hh,
-					l,
-					ll,
-					j,
-					z
+		none,
+		h,
+		hh,
+		l,
+		ll,
+		j,
+		z
 	}				e_length;
 }					t_flag;
 
