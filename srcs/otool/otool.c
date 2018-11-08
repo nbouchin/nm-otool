@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/16 10:34:00 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 15:05:19 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 15:42:43 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,6 @@ int					otool_archive_files(t_mach_header_64 const *mach_header_64,
 		return (1);
 	}
 	return (0);
-}
-
-void				print_error_fd(char const *file_name,
-		char const *error, int fd)
-{
-	ft_putstr_fd(file_name, fd);
-	ft_putendl_fd(error, fd);
 }
 
 void				otool_run_archive_files(t_mach_header_64 *mach_header_64,

@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 15:01:40 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 15:46:02 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ void								print_cputype(
 uint32_t							swi(uint32_t x);
 int									is_out(char *offset);
 
-
 t_section_64						*sectab_realloc(t_section_64 *sectab,
 		size_t new_size, uint32_t old_size);
 
@@ -112,7 +111,6 @@ t_section_64						*alloc_sectab(
 void								process_symtab(t_metadata *mdata,
 		t_mach_header_64 const *mach_header_64,
 		t_load_command *lcommand, int flag);
-
 
 void								print_symbol_32(uint64_t const n_value,
 		char const letter, char const *symname, t_metadata const *metadata);
@@ -155,5 +153,13 @@ t_section_64						*get_current_section(
 t_section_64						*get_sectab(
 		t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata *metadata);
+void								print_error_fd(char const *file_name,
+		char const *error, int fd);
+void								print_section(
+		t_mach_header_64 const *mach_header_64, t_section_64 *section);
+void								print_section_32(
+		t_mach_header_64 const *mach_header_64, t_section_64 *section);
+void								print_big_section_32(
+		t_mach_header_64 const *mach_header_64, t_section_64 *section);
 
 #endif
