@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 13:41:06 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/08 16:31:25 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,29 +39,31 @@ void			print_symtab(t_load_command const *lc,
 	}
 }
 
-void			print_big_symtab(t_load_command const *lc,
+void			print_big_symtab(t_load_command const *load_command,
 		t_mach_header_64 const *mach_header_64, t_metadata const *md)
 {
 	uint32_t		i;
-	char			*stable;
+	char			*st;
 
 	i = -1;
-	if (is_out((char *)mach_header_64 + swi(((t_symtab_command*)lc)->stroff)))
+	if (is_out((char *)mach_header_64
+				+ swi(((t_symtab_command*)load_command)->stroff)))
 		return ;
-	stable = ((char *)mach_header_64 + swi(((t_symtab_command*)lc)->stroff));
-	while (++i < swi(((t_symtab_command*)lc)->nsyms))
+	st = (char *)((char *)mach_header_64
+			+ swi(((t_symtab_command*)load_command)->stroff));
+	while (++i < swi(((t_symtab_command*)load_command)->nsyms))
 	{
 		if (is_64bits(mach_header_64->magic))
 		{
-			if (is_out(bst(stable, md, i)))
+			if (is_out((char*)st + swi(md->symtab[i].n_un.n_strx)))
 				return ;
-			gsym_64(swi(md->symtab[i].n_value), bst(stable, md, i), md, i);
+			gsym_64(swi(md->symtab[i].n_value), get_st(st, md, i), md, i);
 		}
 		else
 		{
-			if (bst(stable, md, i))
+			if (is_out((char*)st + swi((md->symtab)[i].n_un.n_strx)))
 				return ;
-			get_symbol(swi((md->symtab)[i].n_value), bst(stable, md, i), md, i);
+			get_symbol(swi((md->symtab)[i].n_value), bst(st, md, i), md, i);
 		}
 	}
 }
