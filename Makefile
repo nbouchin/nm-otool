@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/11/09 12:56:04 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/11/09 15:02:52 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC      = 	clang
 HEADER  = 	includes/
 LFTDIR	=	srcs/libft/
 LFTPDIR =	srcs/libft/srcs/ft_printf/
-FLAGS   = 	-Wall -Wextra -Werror -g
+FLAGS   = 	-Wall -Wextra -Werror
 SRCDIR  = 	srcs/
 NM_OBJDIR  = 		nm_objs/
 OTOOL_OBJDIR  = 	otool_objs/
