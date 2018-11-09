@@ -6,7 +6,7 @@
 #    By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/27 13:56:26 by nbouchin          #+#    #+#              #
-#    Updated: 2018/11/08 15:43:58 by nbouchin         ###   ########.fr        #
+#    Updated: 2018/11/09 12:56:04 by nbouchin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ NM_OBJDIR  = 		nm_objs/
 OTOOL_OBJDIR  = 	otool_objs/
 
 NM_SRC		= nm/nm.c \
+		  nm/sort.c \
 		  nm/utils.c \
 		  nm/nm_utils.c \
 		  nm/process_file.c \

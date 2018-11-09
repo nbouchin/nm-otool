@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/26 10:24:19 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 15:51:24 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/09 13:59:49 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,5 +163,10 @@ void								print_section_32(
 		t_mach_header_64 const *mach_header_64, t_section_64 *section);
 void								print_big_section_32(
 		t_mach_header_64 const *mach_header_64, t_section_64 *section);
+
+void								sort_symtab(char *st, t_metadata const *md,
+		size_t size);
+void								sort_big_symtab(char *st,
+		t_metadata const *md, size_t size);
 
 #endif

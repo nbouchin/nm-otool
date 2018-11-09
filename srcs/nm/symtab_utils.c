@@ -6,7 +6,7 @@
 /*   By: nbouchin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/17 16:55:50 by nbouchin          #+#    #+#             */
-/*   Updated: 2018/11/08 16:31:25 by nbouchin         ###   ########.fr       */
+/*   Updated: 2018/11/09 13:42:53 by nbouchin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void			print_symtab(t_load_command const *lc,
 	if (is_out((char *)mach_header_64 + ((t_symtab_command*)lc)->stroff))
 		return ;
 	st = ((char *)mach_header_64 + ((t_symtab_command*)lc)->stroff);
+	sort_symtab(st, md, ((t_symtab_command*)lc)->nsyms);
 	while (++i < ((t_symtab_command*)lc)->nsyms)
 	{
 		if (is_64bits(mach_header_64->magic))
@@ -51,6 +52,7 @@ void			print_big_symtab(t_load_command const *load_command,
 		return ;
 	st = (char *)((char *)mach_header_64
 			+ swi(((t_symtab_command*)load_command)->stroff));
+	sort_big_symtab(st, md, swi(((t_symtab_command*)load_command)->nsyms));
 	while (++i < swi(((t_symtab_command*)load_command)->nsyms))
 	{
 		if (is_64bits(mach_header_64->magic))
